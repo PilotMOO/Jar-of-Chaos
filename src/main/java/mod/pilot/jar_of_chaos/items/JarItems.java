@@ -3,7 +3,6 @@ package mod.pilot.jar_of_chaos.items;
 import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.items.custom.JarItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
