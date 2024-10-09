@@ -1,5 +1,15 @@
 {
   "item.jar_of_chaos.jar_of_chaos": "Jar of Chaos",
+  "item.jar_of_chaos.explode_wand": "Explode Wand",
+  "item.jar_of_chaos.random_explode_wand": "Random Explode Wand",
+
+  "entity.jar_of_chaos.piano": "Grand Piano",
+
+  "sounds.jar_of_chaos:piano_crash": "Piano Crashing",
+
+  "death.attack.piano1": "%1$s forgot to look up",
+  "death.attack.piano2": "%1$s got Loony-Toon'd",
+  "death.attack.piano3": "%1$s was crushed by a Grand Piano",
 
   "creativetab.jar_tab": "Jar of Chaos"
 }

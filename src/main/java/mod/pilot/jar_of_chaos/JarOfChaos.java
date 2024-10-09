@@ -1,8 +1,10 @@
 package mod.pilot.jar_of_chaos;
 
 import com.mojang.logging.LogUtils;
+import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.items.JarCreativeTabs;
 import mod.pilot.jar_of_chaos.items.JarItems;
+import mod.pilot.jar_of_chaos.sound.JarSounds;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +26,8 @@ public class JarOfChaos
         MinecraftForge.EVENT_BUS.register(this);
         JarItems.register(modEventBus);
         JarCreativeTabs.register(modEventBus);
+        JarEntities.register(modEventBus);
+        JarSounds.register(modEventBus);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

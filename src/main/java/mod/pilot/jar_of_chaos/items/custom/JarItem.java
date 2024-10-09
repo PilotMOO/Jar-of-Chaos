@@ -12,8 +12,15 @@ import mod.azure.azurelib.network.AbstractPacket;
 import mod.azure.azurelib.platform.services.AzureLibNetwork;
 import mod.pilot.jar_of_chaos.events.JarForgeEventHandler;
 import mod.pilot.jar_of_chaos.items.custom.client.JarRenderer;
+import mod.pilot.jar_of_chaos.systems.JarEvents.JarEvent;
+import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -32,6 +39,29 @@ public class JarItem extends Item implements GeoItem {
         super(pProperties);
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
+
+    private JarEvent LastEvent;
+    public JarEvent getLastEvent(){
+        return LastEvent;
+    }
+
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+        if (level instanceof ServerLevel server){
+            JarEvent newEvent = JarEventHandler.getRandomCloneFromEventPool(server, player, player.position());
+            int cycleTracker = 0;
+            while ((newEvent == null || (LastEvent != null && newEvent.getClass() == getLastEvent().getClass())) && cycleTracker < 5){
+                newEvent = JarEventHandler.getRandomCloneFromEventPool(server, player, player.position());
+                cycleTracker++;
+            }
+            JarEvent.Subscribe(newEvent);
+            player.getCooldowns().addCooldown(this, 60);
+            player.playSound(SoundEvents.GLASS_BREAK);
+        }
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, new ItemStack(this));
+    }
+
+
 
     @Override
     public void createRenderer(Consumer<Object> consumer) {
@@ -69,24 +99,4 @@ public class JarItem extends Item implements GeoItem {
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
     }
-
-    /*
-    @Override
-    public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull Entity entity, int pSlotId, boolean pIsSelected) {
-        if (entity instanceof Player player && level instanceof ServerLevel server){
-            triggerAnim(player, GeoItem.getOrAssignId(itemStack, server), "JarAnimationController", "Stable");
-        }
-    }*/
-
-    /*
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        System.out.println("Trying to set up animations for the jar");
-        triggerAnim(GeoItem.getOrAssignId(new ItemStack(this), JarForgeEventHandler.getServer()), "JarAnimationController", "Stable", new AzureLibNetwork.IPacketCallback() {
-            @Override
-            public void onReadyToSend(AbstractPacket packetToSend) {
-                return;
-            }
-        });
-    }*/
 }

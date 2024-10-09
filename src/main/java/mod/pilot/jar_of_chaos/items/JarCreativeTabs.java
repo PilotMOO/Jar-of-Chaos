@@ -21,6 +21,8 @@ public class JarCreativeTabs {
                     .title(Component.translatable("creativetab.jar_tab"))
                     .displayItems((something, register) ->{
                         register.accept(JarItems.JAR.get());
+                        register.accept(JarItems.EXPLODE_WAND.get());
+                        register.accept(JarItems.RANDOM_EXPLODE_WAND.get());
                     })
                     .build());
 }
