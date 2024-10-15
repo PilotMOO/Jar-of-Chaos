@@ -2,6 +2,7 @@
   "item.jar_of_chaos.jar_of_chaos": "Jar of Chaos",
   "item.jar_of_chaos.explode_wand": "Explode Wand",
   "item.jar_of_chaos.random_explode_wand": "Random Explode Wand",
+  "item.jar_of_chaos.piano_wand": "Grand Piano Wand",
 
   "entity.jar_of_chaos.piano": "Grand Piano",
 
@@ -10,6 +11,9 @@
   "death.attack.piano1": "%1$s forgot to look up",
   "death.attack.piano2": "%1$s got Loony-Toon'd",
   "death.attack.piano3": "%1$s was crushed by a Grand Piano",
+
+  "enchantment.jar_of_chaos.pianoism": "Pianoism",
+  "enchantment.jar_of_chaos.pianoism.desc": "Has a small chance to spawn a grand piano above struck foes' heads, crushing them in a very cartoonish way",
 
   "creativetab.jar_tab": "Jar of Chaos"
 }

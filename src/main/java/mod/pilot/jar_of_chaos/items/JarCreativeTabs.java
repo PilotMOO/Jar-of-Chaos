@@ -23,6 +23,7 @@ public class JarCreativeTabs {
                         register.accept(JarItems.JAR.get());
                         register.accept(JarItems.EXPLODE_WAND.get());
                         register.accept(JarItems.RANDOM_EXPLODE_WAND.get());
+                        register.accept(JarItems.PIANO_WAND.get());
                     })
                     .build());
 }

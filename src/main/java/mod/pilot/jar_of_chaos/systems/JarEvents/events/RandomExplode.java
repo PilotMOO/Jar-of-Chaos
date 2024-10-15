@@ -12,11 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public class RandomExplode extends JarEvent {
     public RandomExplode(ServerLevel level, Entity parent){
         super("ExplodeEvent", -1, level, parent, null);
-        System.out.println("Creating a new RandomExplodeEvent");
     }
     public RandomExplode(ServerLevel server, Vec3 pos) {
         super("ExplodeEvent", -1, server, null, pos);
-        System.out.println("Creating a new RandomExplodeEvent");
     }
 
 
@@ -33,7 +31,6 @@ public class RandomExplode extends JarEvent {
 
     @Override
     public void InstantEffect() {
-        System.out.println("Trying to explode");
         server.explode(getParent(), null, new ExplosionDamageCalculator(), getPosition(), 4, true, Level.ExplosionInteraction.MOB);
     }
 

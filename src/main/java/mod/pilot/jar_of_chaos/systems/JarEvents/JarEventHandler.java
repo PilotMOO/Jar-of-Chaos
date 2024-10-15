@@ -45,6 +45,9 @@ public class JarEventHandler {
 
         activeEvents.removeAll(toRemove);
     }
+    public static void PurgeAllEvents(){
+        activeEvents.clear();
+    }
 
     private static final ArrayList<JarEvent> EventPool = new ArrayList<>();
     public static void AddToEventPool(JarEvent event){

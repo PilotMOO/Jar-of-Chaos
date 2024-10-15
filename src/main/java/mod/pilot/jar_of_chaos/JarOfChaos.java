@@ -1,14 +1,18 @@
 package mod.pilot.jar_of_chaos;
 
 import com.mojang.logging.LogUtils;
+import mod.pilot.jar_of_chaos.enchantments.JarEnchants;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.items.JarCreativeTabs;
 import mod.pilot.jar_of_chaos.items.JarItems;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -28,7 +32,9 @@ public class JarOfChaos
         JarCreativeTabs.register(modEventBus);
         JarEntities.register(modEventBus);
         JarSounds.register(modEventBus);
+        JarEnchants.register(modEventBus);
 
-        //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC, "JoC_Config.toml");
+        Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_Config.toml").toString());
     }
 }

@@ -4,6 +4,7 @@ import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.items.custom.DisplacedContinuousExplosionWand;
 import mod.pilot.jar_of_chaos.items.custom.ExplodeEventWandTest;
 import mod.pilot.jar_of_chaos.items.custom.JarItem;
+import mod.pilot.jar_of_chaos.items.custom.PianoWand;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,6 +20,8 @@ public class JarItems {
             () -> new ExplodeEventWandTest(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> RANDOM_EXPLODE_WAND = ITEMS.register("random_explode_wand",
             () -> new DisplacedContinuousExplosionWand(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> PIANO_WAND = ITEMS.register("piano_wand",
+            () -> new PianoWand(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
