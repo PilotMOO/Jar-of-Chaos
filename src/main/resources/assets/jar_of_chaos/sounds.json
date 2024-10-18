@@ -1,6 +1,6 @@
 {
   "piano_crash": {
-    "subtitles": "sounds.jar_of_chaos:piano_crash",
+    "subtitles": "sounds.jar_of_chaos.piano_crash",
     "sounds": [
       "jar_of_chaos:piano1",
       "jar_of_chaos:piano2"

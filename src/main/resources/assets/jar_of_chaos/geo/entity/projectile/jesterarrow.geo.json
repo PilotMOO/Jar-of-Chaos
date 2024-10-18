@@ -1,0 +1,50 @@
+{
+	"format_version": "1.21.20",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Arrow",
+					"pivot": [0, 0, -1]
+				},
+				{
+					"name": "Shaft",
+					"parent": "Arrow",
+					"pivot": [0, 0, -1],
+					"cubes": [
+						{"origin": [-0.5, -0.5, -8], "size": [1, 1, 14], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "Tail",
+					"parent": "Arrow",
+					"pivot": [0, 0, 5],
+					"rotation": [0, 0, -45],
+					"cubes": [
+						{"origin": [0, -3, 2], "size": [0, 6, 6], "uv": [0, -1]},
+						{"origin": [-3, 0, 2], "size": [6, 0, 6], "pivot": [0, 0, 5], "rotation": [0, -90, 0], "uv": [-6, 5]}
+					]
+				},
+				{
+					"name": "Head",
+					"parent": "Arrow",
+					"pivot": [0, 0, -6.5373],
+					"cubes": [
+						{"origin": [-0.5, 0.80881, -7.90999], "size": [1, 1, 4], "inflate": 0.09, "pivot": [0, 0, -5.42526], "rotation": [32.5, 0, 0], "uv": [0, 0], "mirror": true},
+						{"origin": [-0.5, -1.80881, -7.90999], "size": [1, 1, 4], "inflate": 0.1, "pivot": [0, 0, -5.42526], "rotation": [-32.5, 0, 0], "uv": [0, 0]},
+						{"origin": [-0.5, -1.80881, -7.90999], "size": [1, 1, 4], "inflate": 0.1, "pivot": [0, 0, -5.42526], "rotation": [-32.5, 0, -90], "uv": [0, 0]},
+						{"origin": [-0.5, 0.80881, -7.90999], "size": [1, 1, 4], "inflate": 0.09, "pivot": [0, 0, -5.42526], "rotation": [32.5, 0, -90], "uv": [0, 0], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}

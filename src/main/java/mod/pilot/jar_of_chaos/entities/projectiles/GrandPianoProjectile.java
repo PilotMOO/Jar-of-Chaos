@@ -139,6 +139,9 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         piano.setDamage(damage != null ? damage : defaultDamage);
         piano.setOwner(parent);
         piano.moveTo(startingPos.add(0, spawnHeight, 0));
+        RandomSource random = RandomSource.create();
+        piano.setYRot(random.nextInt(-180, 181));
+        piano.setXRot(random.nextInt(-180, 181));
         piano.setState(state.falling);
         level.addFreshEntity(piano);
         return piano;
@@ -281,7 +284,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
                 block instanceof BambooSaplingBlock;
     }
 
-    private ArrayList<Entity> trappedEntities = new ArrayList<>();
+    private final ArrayList<Entity> trappedEntities = new ArrayList<>();
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult result) {
@@ -353,7 +356,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
 
     public void TrapEntityTick(Entity toTrap){
         toTrap.setDeltaMovement(getDeltaMovement());
-        if (getState() == 1) toTrap.setPos(position().add(0, 1, 0));
+        if (getState() == 1) toTrap.setPos(position().add(0, -1, 0));
         toTrap.setSprinting(false);
     }
 }

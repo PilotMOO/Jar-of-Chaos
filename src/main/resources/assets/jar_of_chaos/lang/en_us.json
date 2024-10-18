@@ -1,12 +1,14 @@
 {
   "item.jar_of_chaos.jar_of_chaos": "Jar of Chaos",
+  "item.jar_of_chaos.jester_bow": "Jester's Bow",
+
   "item.jar_of_chaos.explode_wand": "Explode Wand",
   "item.jar_of_chaos.random_explode_wand": "Random Explode Wand",
   "item.jar_of_chaos.piano_wand": "Grand Piano Wand",
 
   "entity.jar_of_chaos.piano": "Grand Piano",
 
-  "sounds.jar_of_chaos:piano_crash": "Piano Crashing",
+  "sounds.jar_of_chaos.piano_crash": "Piano crashing",
 
   "death.attack.piano1": "%1$s forgot to look up",
   "death.attack.piano2": "%1$s got Loony-Toon'd",
