@@ -13,6 +13,7 @@
   "death.attack.piano1": "%1$s forgot to look up",
   "death.attack.piano2": "%1$s got Loony-Toon'd",
   "death.attack.piano3": "%1$s was crushed by a Grand Piano",
+  "death.attack.fish": "%1$s was slapped really hard by %2$s",
 
   "enchantment.jar_of_chaos.pianoism": "Pianoism",
   "enchantment.jar_of_chaos.pianoism.desc": "Has a small chance to spawn a grand piano above struck foes' heads, crushing them in a very cartoonish way",

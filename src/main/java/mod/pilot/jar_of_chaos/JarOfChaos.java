@@ -7,6 +7,7 @@ import mod.pilot.jar_of_chaos.items.JarCreativeTabs;
 import mod.pilot.jar_of_chaos.items.JarItems;
 import mod.pilot.jar_of_chaos.particles.JarParticles;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
+import mod.pilot.jar_of_chaos.systems.JesterArrowEvents.JesterArrowEventManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -38,5 +39,7 @@ public class JarOfChaos
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC, "JoC_Config.toml");
         Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_Config.toml").toString());
+
+        JesterArrowEventManager.RegisterAllEvents();
     }
 }

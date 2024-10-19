@@ -2,8 +2,10 @@ package mod.pilot.jar_of_chaos.events;
 
 import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
+import mod.pilot.jar_of_chaos.entities.client.mobs.ChatteringTeethRenderer;
 import mod.pilot.jar_of_chaos.entities.client.projectiles.GrandPianoRenderer;
 import mod.pilot.jar_of_chaos.entities.client.projectiles.JesterArrowRenderer;
+import mod.pilot.jar_of_chaos.entities.mobs.ChatteringTeethEntity;
 import mod.pilot.jar_of_chaos.particles.JarParticles;
 import mod.pilot.jar_of_chaos.particles.StarParticle;
 import net.minecraft.client.Minecraft;
@@ -17,6 +19,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientManager {
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event){
+        //event.registerEntityRenderer(JarEntities.CHATTERING_TEETH.get(), ChatteringTeethRenderer::new);
+
         event.registerEntityRenderer(JarEntities.PIANO.get(), GrandPianoRenderer::new);
         event.registerEntityRenderer(JarEntities.JESTER_ARROW.get(), JesterArrowRenderer::new);
     }

@@ -9,26 +9,26 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.entities.projectiles.JesterArrowProjectile;
 import mod.pilot.jar_of_chaos.items.custom.client.JesterBowRenderer;
+import mod.pilot.jar_of_chaos.systems.JesterArrowEvents.JesterArrowEvent;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -55,6 +55,8 @@ public class JesterBowItem extends BowItem implements GeoItem {
     public void setState(BowStates state){
         setState((byte)state.ordinal());
     }
+
+    private Class<? extends JesterArrowEvent> lastEventClass;
 
     @Override
     public void createRenderer(Consumer<Object> consumer) {
@@ -206,8 +208,12 @@ public class JesterBowItem extends BowItem implements GeoItem {
 
     @Override
     public @NotNull AbstractArrow customArrow(@NotNull AbstractArrow arrow) {
-        JesterArrowProjectile JArrow = new JesterArrowProjectile(JarEntities.JESTER_ARROW.get(), arrow.level());
+        JesterArrowProjectile JArrow = JesterArrowProjectile.CreateWithBlacklist(arrow.level(),
+                new ArrayList<>(Collections.singletonList(lastEventClass)));
         JArrow.copyPosition(arrow);
+        if (JArrow.Event != null){
+            lastEventClass = JArrow.Event.getClass();
+        }
         return JArrow;
     }
 }
