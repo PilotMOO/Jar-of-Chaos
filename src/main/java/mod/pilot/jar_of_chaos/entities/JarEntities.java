@@ -16,9 +16,9 @@ public class JarEntities {
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, JarOfChaos.MOD_ID);
 
 
-    /*public static final RegistryObject<EntityType<ChatteringTeethEntity>> CHATTERING_TEETH =
+    public static final RegistryObject<EntityType<ChatteringTeethEntity>> CHATTERING_TEETH =
             ENTITY_TYPES.register("chattering_teeth", () -> EntityType.Builder.of(ChatteringTeethEntity::new, MobCategory.MONSTER)
-                    .sized(0.5f, 0.5f).build("chattering_teeth"));*/
+                    .sized(0.5f, 0.5f).build("chattering_teeth"));
 
     public static final RegistryObject<EntityType<GrandPianoProjectile>> PIANO =
             ENTITY_TYPES.register("piano", () -> EntityType.Builder.of(GrandPianoProjectile::new, MobCategory.MISC)

@@ -1,12 +1,16 @@
 {
   "item.jar_of_chaos.jar_of_chaos": "Jar of Chaos",
   "item.jar_of_chaos.jester_bow": "Jester's Bow",
+  "item.jar_of_chaos.chatter_cannon": "Chattering Cannon",
 
   "item.jar_of_chaos.explode_wand": "Explode Wand",
   "item.jar_of_chaos.random_explode_wand": "Random Explode Wand",
   "item.jar_of_chaos.piano_wand": "Grand Piano Wand",
 
+  "item.jar_of_chaos.chattering_teeth_spawn": "Chattering Teeth",
+
   "entity.jar_of_chaos.piano": "Grand Piano",
+  "entity.jar_of_chaos.chattering_teeth": "Chattering Teeth",
 
   "sounds.jar_of_chaos.piano_crash": "Piano crashing",
 
@@ -14,6 +18,9 @@
   "death.attack.piano2": "%1$s got Loony-Toon'd",
   "death.attack.piano3": "%1$s was crushed by a Grand Piano",
   "death.attack.fish": "%1$s was slapped really hard by %2$s",
+  "death.attack.teeth1": "%1$s had their face chewed off by %2$s",
+  "death.attack.teeth2": "%1$s's bones were gnawed on by %2$s",
+  "death.attack.teeth3": "%1$s became %2$s fodder",
 
   "enchantment.jar_of_chaos.pianoism": "Pianoism",
   "enchantment.jar_of_chaos.pianoism.desc": "Has a small chance to spawn a grand piano above struck foes' heads, crushing them in a very cartoonish way",

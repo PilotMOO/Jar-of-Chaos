@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "jar_of_chaos:item/chattering_teeth_spawn"
+  }
+}

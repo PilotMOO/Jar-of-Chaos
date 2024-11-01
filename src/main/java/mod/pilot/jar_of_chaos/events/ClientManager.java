@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientManager {
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event){
-        //event.registerEntityRenderer(JarEntities.CHATTERING_TEETH.get(), ChatteringTeethRenderer::new);
+        event.registerEntityRenderer(JarEntities.CHATTERING_TEETH.get(), ChatteringTeethRenderer::new);
 
         event.registerEntityRenderer(JarEntities.PIANO.get(), GrandPianoRenderer::new);
         event.registerEntityRenderer(JarEntities.JESTER_ARROW.get(), JesterArrowRenderer::new);

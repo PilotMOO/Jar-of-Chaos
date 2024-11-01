@@ -8,13 +8,14 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 
-public class ChatteringTeethMovementGoal extends Goal {
+@Deprecated
+public class DEPRICATEDChatteringTeethMovementGoal extends Goal {
     final ChatteringTeethEntity parent;
     double maxLeapSpeed;
     private int nextIdleLeap;
     public LivingEntity latchedTarget;
     private double latchYDistanceFromBase;
-    public ChatteringTeethMovementGoal(ChatteringTeethEntity parent, double maxSpeed){
+    public DEPRICATEDChatteringTeethMovementGoal(ChatteringTeethEntity parent, double maxSpeed){
         this.parent = parent;
         this.maxLeapSpeed = maxSpeed;
     }

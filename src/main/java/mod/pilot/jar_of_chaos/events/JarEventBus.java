@@ -12,6 +12,6 @@ import net.minecraftforge.fml.common.Mod;
 public class JarEventBus {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event){
-        //event.put(JarEntities.CHATTERING_TEETH.get(), ChatteringTeethEntity.createAttributes().build());
+        event.put(JarEntities.CHATTERING_TEETH.get(), ChatteringTeethEntity.createAttributes().build());
     }
 }

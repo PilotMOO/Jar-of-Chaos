@@ -5,7 +5,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -22,12 +21,9 @@ public class JarCreativeTabs {
                     .displayItems((something, register) ->{
                         register.accept(JarItems.JAR.get());
                         register.accept(JarItems.JESTER_BOW.get());
+                        register.accept(JarItems.CHATTER_CANNON.get());
 
-                        register.accept(JarItems.EXPLODE_WAND.get());
-                        register.accept(JarItems.RANDOM_EXPLODE_WAND.get());
-                        register.accept(JarItems.PIANO_WAND.get());
-
-                        register.accept(JarItems.STAR_WAND.get());
+                        register.accept(JarItems.CHATTERING_TEETH_SPAWN.get());
                     })
                     .build());
 }

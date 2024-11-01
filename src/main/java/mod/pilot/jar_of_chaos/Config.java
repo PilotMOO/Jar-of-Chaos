@@ -22,6 +22,10 @@ public class Config
 
         public final ForgeConfigSpec.ConfigValue<String> fish_entity;
 
+        public final ForgeConfigSpec.ConfigValue<Boolean> pickup_teeth;
+        public final ForgeConfigSpec.ConfigValue<Boolean> teeth_pvp;
+        public final ForgeConfigSpec.ConfigValue<Integer> teeth_age;
+
         public final ForgeConfigSpec.ConfigValue<Boolean> should_pianos_crash_harder;
 
         public Server(ForgeConfigSpec.Builder builder){
@@ -40,6 +44,12 @@ public class Config
                     "minecraft:salmon");
             builder.pop();
 
+            builder.pop();
+
+            builder.push("Entity Configurable");
+            teeth_age = builder.defineInRange("How long Chattering Teeth can exist for before being removed", 2400, 1, Integer.MAX_VALUE);
+            pickup_teeth = builder.define("Should you be able to pick up other people's chattering teeth?", false);
+            teeth_pvp = builder.define("Should Chattering Teeth owned by players attack other players?", false);
             builder.pop();
 
             builder.push("Stupid configs options");

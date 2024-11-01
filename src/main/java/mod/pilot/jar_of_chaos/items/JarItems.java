@@ -1,8 +1,10 @@
 package mod.pilot.jar_of_chaos.items;
 
 import mod.pilot.jar_of_chaos.JarOfChaos;
+import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.items.custom.*;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,16 +17,11 @@ public class JarItems {
             () -> new JarItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> JESTER_BOW = ITEMS.register("jester_bow",
             () -> new JesterBowItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> CHATTER_CANNON = ITEMS.register("chatter_cannon",
+            () -> new ChatterCannonItem(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> EXPLODE_WAND = ITEMS.register("explode_wand",
-            () -> new ExplodeEventWandTest(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> RANDOM_EXPLODE_WAND = ITEMS.register("random_explode_wand",
-            () -> new DisplacedContinuousExplosionWand(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> PIANO_WAND = ITEMS.register("piano_wand",
-            () -> new PianoWand(new Item.Properties().stacksTo(1)));
-
-    public static final RegistryObject<Item> STAR_WAND = ITEMS.register("star_wand",
-            () -> new StarParticleWand(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> CHATTERING_TEETH_SPAWN = ITEMS.register("chattering_teeth_spawn",
+            () -> new ChatteringTeethSpawn(new Item.Properties()));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

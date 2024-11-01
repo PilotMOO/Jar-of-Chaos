@@ -5,5 +5,11 @@
       "jar_of_chaos:piano1",
       "jar_of_chaos:piano2"
     ]
+  },
+  "chattering_teeth": {
+    "subtitles": "sounds.jar_of_chaos.chattering_teeth",
+    "sounds": [
+      "jar_of_chaos:chattering_teeth"
+    ]
   }
 }

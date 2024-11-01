@@ -14,9 +14,7 @@ public class JarSounds {
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, JarOfChaos.MOD_ID);
 
     public static final RegistryObject<SoundEvent> PIANO_CRASH = registerSoundEvents("piano_crash");
-
-    public static final ForgeSoundType TEST_SOUND_TYPE = new ForgeSoundType(1f, 1f,
-            null, null, null, null, null); //Replace Null with actual sounds
+    public static final RegistryObject<SoundEvent> CHATTERING_TEETH = registerSoundEvents("chattering_teeth");
 
     private static RegistryObject<SoundEvent> registerSoundEvents(String name) {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(JarOfChaos.MOD_ID, name)));
