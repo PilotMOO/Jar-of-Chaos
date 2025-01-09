@@ -2,6 +2,7 @@ package mod.pilot.jar_of_chaos.entities;
 
 import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.entities.mobs.ChatteringTeethEntity;
+import mod.pilot.jar_of_chaos.entities.mobs.KingSlimeEntity;
 import mod.pilot.jar_of_chaos.entities.projectiles.GrandPianoProjectile;
 import mod.pilot.jar_of_chaos.entities.projectiles.JesterArrowProjectile;
 import net.minecraft.world.entity.EntityType;
@@ -19,6 +20,9 @@ public class JarEntities {
     public static final RegistryObject<EntityType<ChatteringTeethEntity>> CHATTERING_TEETH =
             ENTITY_TYPES.register("chattering_teeth", () -> EntityType.Builder.of(ChatteringTeethEntity::new, MobCategory.MONSTER)
                     .sized(0.5f, 0.5f).build("chattering_teeth"));
+    public static final RegistryObject<EntityType<KingSlimeEntity>> KING_SLIME =
+            ENTITY_TYPES.register("king_slime", () -> EntityType.Builder.of(KingSlimeEntity::new, MobCategory.MONSTER)
+                    .sized(0.5f, 0.5f).build("king_slime"));
 
     public static final RegistryObject<EntityType<GrandPianoProjectile>> PIANO =
             ENTITY_TYPES.register("piano", () -> EntityType.Builder.of(GrandPianoProjectile::new, MobCategory.MISC)

@@ -1,9 +1,6 @@
 package mod.pilot.jar_of_chaos.systems.JarEvents;
 
-import mod.pilot.jar_of_chaos.systems.JarEvents.events.DisplacedContinuousExplosionEvent;
-import mod.pilot.jar_of_chaos.systems.JarEvents.events.LotsOfPigsEvent;
-import mod.pilot.jar_of_chaos.systems.JarEvents.events.PigEvent;
-import mod.pilot.jar_of_chaos.systems.JarEvents.events.RandomExplode;
+import mod.pilot.jar_of_chaos.systems.JarEvents.events.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -28,7 +25,7 @@ public class JarEventHandler {
             event.EventLifecycle();
         }
     }
-    public boolean AmISubscribed(JarEvent event){
+    public static boolean amISubscribed(JarEvent event){
         for (JarEvent active : getEvents()){
             if (active == event) return true;
         }
@@ -75,5 +72,6 @@ public class JarEventHandler {
         AddToEventPool(new DisplacedContinuousExplosionEvent(600, server, null, null, 15));
         AddToEventPool(new PigEvent(server, (Entity)null));
         AddToEventPool(new LotsOfPigsEvent(server, (Entity)null, 10, 6));
+        AddToEventPool(new YouLostTheGameEvent(server, null));
     }
 }

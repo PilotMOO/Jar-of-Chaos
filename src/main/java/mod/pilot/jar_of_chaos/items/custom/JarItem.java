@@ -42,13 +42,16 @@ public class JarItem extends Item implements GeoItem {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         if (level instanceof ServerLevel server){
-            JarEvent newEvent = JarEventHandler.getRandomCloneFromEventPool(server, player, player.position());
+            JarEvent newEvent;
             int cycleTracker = 0;
-            while ((newEvent == null || (LastEvent != null && newEvent.getClass() == getLastEvent().getClass())) && cycleTracker < 5){
+            do{
                 newEvent = JarEventHandler.getRandomCloneFromEventPool(server, player, player.position());
                 cycleTracker++;
             }
-            JarEvent.Subscribe(newEvent);
+            while ((newEvent == null || (LastEvent != null && newEvent.getClass() == getLastEvent().getClass())) && cycleTracker < 5);
+            if (newEvent != null){
+                newEvent.Subscribe();
+            }
             player.getCooldowns().addCooldown(this, 60);
             player.playSound(SoundEvents.GLASS_BREAK);
         }

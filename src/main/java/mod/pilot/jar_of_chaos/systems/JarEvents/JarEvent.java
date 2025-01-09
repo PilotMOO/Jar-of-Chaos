@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class JarEvent {
     /**
-     Abstract class for all Jar Events created by the Jar.<p>
-     When creating a new Event, make sure to call {@code JarEvent.Subscribe(YourEventHere)} to get it to register inside of Active Events,
-     otherwise it won't ever trigger! Instant Events do not require to be subscribed to take effect,
-     denote an instant event by inputting -1 for the duration.<p>
+     Abstract class for all Jar Events created by the Jar.<p></p>
+     When creating a new Event, make sure to call {@code JarEvent.Subscribe(YourEventHere) or YourEvent.Subscribe()}
+     to get it to register inside of Active Events, otherwise it won't ever trigger! (Both work, one is a static reference and the other is shorthand)
+     Instant Events are declared by inputting -1 for the duration.<p></p>
      Check out IEventPersistent for creating new events that get saved in the world data
-     if you don't want them to be cleared after a relog. <p>
+     if you don't want them to be cleared after a relog. <p></p>
      Note that some parameters are Nullable, but try to feed in values when calling them anyway due to some events requiring them to not be null.
      Better safe than sorry
 
@@ -34,7 +34,7 @@ public abstract class JarEvent {
         if (!nullBool){
             setPosition(pos);
         }
-        EventState = (byte) (EventDuration == -1 ? 0 : 1);
+        EventState = (byte)(EventDuration == -1 ? 0 : 1);
     }
     public abstract JarEvent Clone(@NotNull ServerLevel server, @Nullable Entity parent, @Nullable Vec3 pos);
     public enum EventStates{
@@ -140,6 +140,9 @@ public abstract class JarEvent {
         eventPosition = pos;
     }
 
+    public void Subscribe(){
+        Subscribe(this);
+    }
     public static void Subscribe(JarEvent event){
         System.out.println("Subscribing Event " + event);
         JarEventHandler.AddToEvents(event);
@@ -148,7 +151,8 @@ public abstract class JarEvent {
         }
     }
 
-    /**Gets called every tick, manages which methods to call. Edit {@code InstantEffect()}, {@code StartFlag()}, {@code EventTick()}, and {@code FinalizeFlags()} for event effects, not this.*/
+    /**Gets called every tick, manages which methods to call. <p></p>
+     * Edit {@code InstantEffect()}, {@code StartFlag()}, {@code EventTick()}, and {@code FinalizeFlag()} for event effects, not this.*/
     public void EventLifecycle(){
         switch (getState()) {
             default -> {

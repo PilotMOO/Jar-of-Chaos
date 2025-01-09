@@ -26,7 +26,8 @@ public class JesterArrowRenderer extends GeoEntityRenderer<JesterArrowProjectile
     }
 
     @Override
-    public void render(@NotNull JesterArrowProjectile arrow, float yaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight) {
+    public void render(@NotNull JesterArrowProjectile arrow, float yaw, float partialTick, @NotNull PoseStack poseStack,
+                       @NotNull MultiBufferSource pBuffer, int pPackedLight) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, arrow.yRotO, arrow.getYRot())));
         poseStack.mulPose(Axis.XN.rotationDegrees(Mth.lerp(partialTick, arrow.xRotO, arrow.getXRot())));

@@ -3,6 +3,7 @@ package mod.pilot.jar_of_chaos.entities.AI;
 import mod.pilot.jar_of_chaos.damagetypes.JarDamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;

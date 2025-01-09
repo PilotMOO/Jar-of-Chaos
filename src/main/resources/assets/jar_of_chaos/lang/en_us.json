@@ -9,8 +9,11 @@
 
   "item.jar_of_chaos.chattering_teeth_spawn": "Chattering Teeth",
 
+  "item.jar_of_chaos.chattering_teeth_spawn.tooltip": "Use code \"lambert\" at checkout for 20% off!",
+
   "entity.jar_of_chaos.piano": "Grand Piano",
   "entity.jar_of_chaos.chattering_teeth": "Chattering Teeth",
+  "entity.jar_of_chaos.king_slime": "King Slime",
 
   "sounds.jar_of_chaos.piano_crash": "Piano crashing",
 
@@ -25,5 +28,7 @@
   "enchantment.jar_of_chaos.pianoism": "Pianoism",
   "enchantment.jar_of_chaos.pianoism.desc": "Has a small chance to spawn a grand piano above struck foes' heads, crushing them in a very cartoonish way",
 
-  "creativetab.jar_tab": "Jar of Chaos"
+  "creativetab.jar_tab": "Jar of Chaos",
+
+  "item.jar_of_chaos.jar_event.game_lost": "§7You just lost the game!"
 }

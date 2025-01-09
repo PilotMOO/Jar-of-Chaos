@@ -74,6 +74,9 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
     public static final EntityDataAccessor<Float> MaxFallSpeed = SynchedEntityData.defineId(GrandPianoProjectile.class, EntityDataSerializers.FLOAT);
     public float getMaxFallSpeed(){return entityData.get(MaxFallSpeed);}
     public void setMaxFallSpeed(float count) {entityData.set(MaxFallSpeed, count);}
+    public static final EntityDataAccessor<Float> yRot = SynchedEntityData.defineId(GrandPianoProjectile.class, EntityDataSerializers.FLOAT);
+    public float getYRot(){return entityData.get(yRot);}
+    public void setYRot(float rot) {entityData.set(yRot, rot);}
     protected static final int MaxAge = 40;
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
@@ -83,6 +86,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         tag.putInt("Damage", entityData.get(Damage));
         tag.putFloat("Gravity", entityData.get(Gravity));
         tag.putFloat("MaxFallSpeed", entityData.get(MaxFallSpeed));
+        tag.putFloat("YRot", entityData.get(yRot));
     }
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag tag) {
@@ -92,6 +96,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         entityData.set(Damage, tag.getInt("Damage"));
         entityData.set(Gravity, tag.getFloat("Gravity"));
         entityData.set(MaxFallSpeed, tag.getFloat("MaxFallSpeed"));
+        entityData.set(yRot, tag.getFloat("YRot"));
     }
     @Override
     protected void defineSynchedData() {
@@ -100,6 +105,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         this.entityData.define(Damage, defaultDamage);
         this.entityData.define(Gravity, defaultGravity);
         this.entityData.define(MaxFallSpeed, defaultMaxFallSpeed);
+        this.entityData.define(yRot, 0f);
     }
 
     @Override
@@ -108,7 +114,6 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
             if (getState() == 2){
                 event.setAndContinue(RawAnimation.begin().thenPlayAndHold("Crash"));
             }
-
             return PlayState.CONTINUE;
         }));
     }
@@ -141,7 +146,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         piano.moveTo(startingPos.add(0, spawnHeight, 0));
         RandomSource random = RandomSource.create();
         piano.setYRot(random.nextInt(-180, 181));
-        piano.setXRot(random.nextInt(-180, 181));
+        System.out.println("paino y rots: " + piano.getYRot() + ", " + piano.yRotO);
         piano.setState(state.falling);
         level.addFreshEntity(piano);
         return piano;
@@ -298,7 +303,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         if (getState() != 1) return;
         setState(2);
         setDeltaMovement(Vec3.ZERO);
-        playSound(JarSounds.PIANO_CRASH.get(), 10f, 1f);
+        playSound(JarSounds.PIANO_CRASH.get(), 5f, 1f);
         SpawnCrashParticles();
 
         Level level = level();

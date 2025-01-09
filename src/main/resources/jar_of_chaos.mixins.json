@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+    "client.LevelRendererMixin"
   ],
   "minVersion": "0.8"
 }

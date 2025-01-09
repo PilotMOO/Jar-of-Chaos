@@ -1,6 +1,7 @@
 package mod.pilot.jar_of_chaos;
 
 import com.mojang.logging.LogUtils;
+import mod.pilot.jar_of_chaos.data.worlddata.JarGeneralSaveData;
 import mod.pilot.jar_of_chaos.enchantments.JarEnchants;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.items.JarCreativeTabs;
@@ -23,8 +24,8 @@ public class JarOfChaos
 {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "jar_of_chaos";
-    // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+
+    public static JarGeneralSaveData activeData;
     public JarOfChaos()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
