@@ -1,23 +1,26 @@
 package mod.pilot.jar_of_chaos.entities.mobs;
 
-import ca.weblite.objc.Client;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.pilot.jar_of_chaos.data.IntegerCycleTracker;
+import mod.pilot.jar_of_chaos.data.worlddata.JarGeneralSaveData;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
+import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
+import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -45,58 +48,96 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
+    private final KingSlimeEntity.BossEvent bossEvent;
+    public KingSlimeEntity.BossEvent getBossEvent(){return bossEvent;}
+    public UUID getBossEventID(){return bossEvent.getId();}
     private boolean wasOnGround;
     private int sweat = 0;
     public KingSlimeEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.fixupDimensions();
         this.moveControl = new KingSlimeMoveControl(this, 2);
+        bossEvent = new BossEvent(this.getName(), getSize());
     }
-    private KingSlimeEntity(Level pLevel) {
+    private KingSlimeEntity(Level pLevel, int size) {
         super(JarEntities.KING_SLIME.get(), pLevel);
         this.fixupDimensions();
         this.moveControl = new KingSlimeMoveControl(this, 2);
+        bossEvent = new BossEvent(this.getName(), size);
+        this.setSize(size);
     }
 
-    public static void SpawnInAt(ServerLevel server, Vec3 pos, int startingSize){
-        KingSlimeEntity kSlime = new KingSlimeEntity(server);
+    public static void SpawnInAt(ServerLevel server, Vec3 pos, int startingSize, boolean fromSlimeRain){
+        KingSlimeEntity kSlime = new KingSlimeEntity(server, startingSize);
         kSlime.moveTo(pos);
-        kSlime.setSize(startingSize);
+        kSlime.setFromSlimeRain(fromSlimeRain);
         server.addFreshEntity(kSlime);
     }
 
-    /*private enum State{
-        idle,
-        jumping,
-        landing;
-        public int toInt(){
-            return this.ordinal();
-        }
-        public static @Nullable State fromInt(int i){
-            return switch (i){
-                case 0 -> idle;
-                case 1 -> jumping;
-                case 2 -> landing;
-                default -> null;
-            };
+    @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
+        if (!level().isClientSide() && !KingSlimeBossEventManager.getActiveKingSlimes().contains(this)){
+            KingSlimeBossEventManager.addToList(this);
         }
     }
-    public static final EntityDataAccessor<Integer> AIState = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
-    public int getState(){return entityData.get(AIState);}
-    public void setState(int state) {entityData.set(AIState, state);}*/
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+        if (!level().isClientSide() && KingSlimeBossEventManager.getActiveKingSlimes().contains(this)){
+            KingSlimeBossEventManager.removeFromList(this);
+        }
+        bossEvent.removeAllPlayers();
+        bossEvent.setVisible(false);
+    }
+
+    /*private enum State{
+                idle,
+                jumping,
+                landing;
+                public int toInt(){
+                    return this.ordinal();
+                }
+                public static @Nullable State fromInt(int i){
+                    return switch (i){
+                        case 0 -> idle;
+                        case 1 -> jumping;
+                        case 2 -> landing;
+                        default -> null;
+                    };
+                }
+            }
+            public static final EntityDataAccessor<Integer> AIState = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
+            public int getState(){return entityData.get(AIState);}
+            public void setState(int state) {entityData.set(AIState, state);}*/
     public static final EntityDataAccessor<Boolean> Fleeing = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean isFleeing(){return entityData.get(Fleeing);}
     public void setFleeing(boolean flag){entityData.set(Fleeing, flag);}
+    public static final EntityDataAccessor<Boolean> FromSlimeRain = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
+    public boolean isFromSlimeRain(){return entityData.get(FromSlimeRain);}
+    public void setFromSlimeRain(boolean flag){entityData.set(FromSlimeRain, flag);}
     public static final EntityDataAccessor<Integer> Size = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> LargestSize = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
     public int getSize(){return entityData.get(Size);}
+    public int getLargestSize(){return entityData.get(LargestSize);}
     public void setSize(int size) {
         entityData.set(Size, size);
         this.reapplyPosition();
         this.refreshDimensions();
         UpdateStatsBySize();
+        if (size > bossEvent.MaxProgress) {
+            bossEvent.MaxProgress = size;
+            entityData.set(LargestSize, size);
+        }
+        bossEvent.generateAndSetProgress(getSize());
+    }
+    public void forceSetLargestSize(int size){
+        entityData.set(LargestSize, size);
     }
     public float getSizeScale(){
         return getSizeScale(0.075f);
@@ -112,27 +153,28 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     }
     public void UpdateStatsBySize(){
         AttributeInstance mHealth = getAttribute(Attributes.MAX_HEALTH);
-        if (mHealth == null) return;
-        double priorCap = mHealth.getBaseValue();
-        mHealth.setBaseValue(getSize());
-        if (priorCap < mHealth.getBaseValue()){
-            heal((float)(mHealth.getBaseValue() - priorCap));
+        if (mHealth != null){
+            double priorCap = mHealth.getBaseValue();
+            mHealth.setBaseValue(getSize());
+            if (priorCap < mHealth.getBaseValue()){
+                heal((float)(mHealth.getBaseValue() - priorCap));
+            }
         }
 
         AttributeInstance mSpeed = getAttribute(Attributes.MOVEMENT_SPEED);
-        if (mSpeed == null) return;
-        mSpeed.setBaseValue(getSizeScale(0.005f) / 2);
+        if (mSpeed != null) mSpeed.setBaseValue(getSizeScale(0.005f) / 2);
+
         AttributeInstance jSpeed = getAttribute(Attributes.JUMP_STRENGTH);
-        if (jSpeed == null) return;
-        jSpeed.setBaseValue(getSizeScale(0.05f));
+        if (jSpeed != null) jSpeed.setBaseValue(getSizeScale(0.05f));
 
         AttributeInstance attack = getAttribute(Attributes.ATTACK_DAMAGE);
-        if (attack == null) return;
-        attack.setBaseValue(4 + getSizeScale(0.025f));
+        if (attack != null) attack.setBaseValue(4 + getSizeScale(0.025f));
 
         AttributeInstance kb = getAttribute(Attributes.ATTACK_KNOCKBACK);
-        if (kb == null) return;
-        kb.setBaseValue(getSize() * 0.1f);
+        if (kb != null) kb.setBaseValue(getSize() * 0.1f);
+
+        AttributeInstance kbRes = getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+        if (kbRes != null) kbRes.setBaseValue(getSizeScale(0.0025f) - 1);
     }
     public static final EntityDataAccessor<Integer> PriorCameraType = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
     public int getOldCameraType(){return entityData.get(PriorCameraType);}
@@ -143,7 +185,9 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Size", getSize());
+        tag.putInt("LargestSize", entityData.get(LargestSize));
         tag.putBoolean("Fleeing", isFleeing());
+        tag.putBoolean("FromSlimeRain", isFromSlimeRain());
         tag.putInt("CameraType", getOldCameraType());
         //tag.putInt("AIState", getState());
     }
@@ -151,15 +195,21 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setSize(tag.getInt("Size"));
+        forceSetLargestSize(tag.getInt("LargestSize"));
         setFleeing(tag.getBoolean("Fleeing"));
+        setFromSlimeRain(tag.getBoolean("FromSlimeRain"));
         setOldCameraType(tag.getInt("CameraType"));
+
+        bossEvent.MaxProgress = getLargestSize();
         //setState(tag.getInt("AIState"));
     }
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         entityData.define(Size, 1);
+        entityData.define(LargestSize, 1);
         entityData.define(Fleeing, false);
+        entityData.define(FromSlimeRain, false);
         entityData.define(PriorCameraType, -1);
         //entityData.define(AIState, 0);
     }
@@ -173,31 +223,23 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
                 this.doWaterSplashEffect();
             }
         }
+        bossEvent.MaxProgress = getLargestSize();
 
         super.onSyncedDataUpdated(pKey);
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "KingSlimeManager", event ->{
-                /*switch (Objects.requireNonNull(State.fromInt(getState()))){
-            case idle -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-            case jumping -> event.setAndContinue(RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE)
-                    .thenLoop("idle"));
-            case landing -> event.setAndContinue(RawAnimation.begin().then("impact", Animation.LoopType.PLAY_ONCE)
-                    .thenLoop("idle"));*/
-                return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-        }));
+    public static AttributeSupplier.Builder createAttributes(){
+        return KingSlimeEntity.createLivingAttributes()
+                .add(Attributes.MAX_HEALTH, 1D)
+                .add(Attributes.ARMOR, 1)
+                .add(Attributes.FOLLOW_RANGE, 32)
+                .add(Attributes.MOVEMENT_SPEED, 0.2D)
+                .add(Attributes.JUMP_STRENGTH, 0.5D)
+                .add(Attributes.ATTACK_DAMAGE, 10D)
+                .add(Attributes.ATTACK_KNOCKBACK, 0D)
+                .add(Attributes.ATTACK_SPEED, 2D);
     }
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
-    }
-
-
-    private final int upperEatThreshold = 80;
     private final int ignoreTargetThreshold = 20;
     public static final int fleeSize = 20;
     @Override
@@ -210,12 +252,14 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         this.goalSelector.addGoal(1, new KingSlimeFleeGoal<>(this, Player.class, fleeSize, 16, 30,
                 (p) -> !(p.isCreative() || p.isSpectator())));
 
+        this.goalSelector.addGoal(2, new KingSlimeSpawnMinionsGoal(this, 400, 200));
+
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Slime.class, 10, true, false,
-                (target) -> getSize() <= upperEatThreshold));
+                (target) -> getSize() <= getLargestSize() && target.canCollideWith(this)));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Slime.class, 10, true, false,
-                (target) -> getSize() <= upperEatThreshold && getSize() <= ignoreTargetThreshold));
+                (target) -> getSize() <= getLargestSize() && getSize() <= ignoreTargetThreshold && target.canCollideWith(this)));
     }
 
     @Override
@@ -286,6 +330,12 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
+    public void setTarget(@Nullable LivingEntity pTarget) {
+        super.setTarget(pTarget);
+        if (pTarget instanceof ServerPlayer player) bossEvent.addPlayer(player);
+    }
+
+    @Override
     public boolean hurt(@NotNull DamageSource pSource, float amount) {
         if (pSource.getEntity() != null && pSource.getEntity().isPassenger()) amount /= 4;
         boolean flag = super.hurt(pSource, amount);
@@ -302,11 +352,13 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
             }
 
             if (random.nextBoolean()){
-                for (Slime s : level().getEntitiesOfClass(Slime.class, getBoundingBox().inflate(16))){
+                for (Slime s : level().getEntitiesOfClass(Slime.class, getBoundingBox().inflate(16), (s) -> s.canCollideWith(this))){
                     if (random.nextBoolean()) continue;
                     s.setTarget(this);
                 }
             }
+
+            if (pSource.getEntity() instanceof ServerPlayer p) bossEvent.addPlayer(p);
         }
         return flag;
     }
@@ -330,6 +382,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
             } else {
                 int i = this.getSize();
                 if (LE instanceof Slime slime){
+                    if (!slime.canCollideWith(this)) return;
                     int gainedSize = slime.getSize();
                     slime.discard();
                     sizeUpBy(gainedSize * 4);
@@ -347,12 +400,25 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
             }
         }
     }
+    @Override
+    public boolean canAttack(@NotNull LivingEntity pTarget) {
+        return !(pTarget instanceof KingSlimeEntity) && super.canAttack(pTarget);
+    }
 
     @Override
     public float getScale() {
         return getSizeScale();
     }
 
+    @Override
+    public void die(@NotNull DamageSource pDamageSource) {
+        super.die(pDamageSource);
+        if (isFromSlimeRain() && JarGeneralSaveData.isSlimeRain() && level() instanceof ServerLevel s) {
+            SlimeRainManager.StopSlimeRain(s, false);
+        }
+        bossEvent.removeAllPlayers();
+        bossEvent.setVisible(false);
+    }
     /*@Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         return super.getDimensions(pose).scale(1f + (getSize() * 0.01f));
@@ -365,18 +431,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         double d2 = this.getZ();
         super.refreshDimensions();
         this.setPos(d0, d1, d2);
-    }
-
-    public static AttributeSupplier.Builder createAttributes(){
-        return KingSlimeEntity.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, 1D)
-                .add(Attributes.ARMOR, 1)
-                .add(Attributes.FOLLOW_RANGE, 32)
-                .add(Attributes.MOVEMENT_SPEED, 0.2D)
-                .add(Attributes.JUMP_STRENGTH, 0.5D)
-                .add(Attributes.ATTACK_DAMAGE, 10D)
-                .add(Attributes.ATTACK_KNOCKBACK, 0D)
-                .add(Attributes.ATTACK_SPEED, 2D);
     }
 
     @Override
@@ -396,18 +450,37 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         return (float)Math.max(3 - (0.05 * getSize()), 0.5);
     }
 
-    /*@Override
-    protected void removePassenger(@NotNull Entity passenger) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (passenger instanceof Player p && p.getGameProfile() == minecraft.player.getGameProfile()){
-            minecraft.options.setCameraType(CameraType.values()[getOldCameraType()]);
-        }
-        super.removePassenger(passenger);
-    }*/
-
     @Override
     public double getPassengersRidingOffset() {
         return 0;
+    }
+
+    @Override
+    public boolean removeWhenFarAway(double pDistanceToClosestPlayer) {
+        return false;
+    }
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return true;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "KingSlimeManager", event ->{
+                /*switch (Objects.requireNonNull(State.fromInt(getState()))){
+            case idle -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+            case jumping -> event.setAndContinue(RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE)
+                    .thenLoop("idle"));
+            case landing -> event.setAndContinue(RawAnimation.begin().then("impact", Animation.LoopType.PLAY_ONCE)
+                    .thenLoop("idle"));*/
+            return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+        }));
+    }
+
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     public static class KingSlimeAttackGoal extends Goal {
@@ -465,7 +538,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
 
         }
     }
-
     public static class KingSlimeFloatGoal extends Goal {
         private final KingSlimeEntity kSlime;
 
@@ -495,7 +567,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
 
         }
     }
-
     public static class KingSlimeKeepOnJumpingGoal extends Goal {
         private final KingSlimeEntity slime;
 
@@ -515,7 +586,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
             }
         }
     }
-
     public static class KingSlimeMoveControl extends MoveControl {
         private float yRot;
         private int jumpDelay;
@@ -587,7 +657,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
             }
         }
     }
-
     public static class KingSlimeRandomDirectionGoal extends Goal {
         private final KingSlimeEntity kSlime;
         private float chosenDegrees;
@@ -624,7 +693,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
 
         }
     }
-
     public static class KingSlimeFleeGoal<T extends LivingEntity> extends Goal{
         private final KingSlimeEntity kSlime;
         private final Class<T> toFleeFrom;
@@ -727,6 +795,95 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         private List<T> locateNearbyHostiles(){
             return kSlime.level().getEntitiesOfClass(toFleeFrom, kSlime.getBoundingBox().inflate(kSlime.getAttributeValue(Attributes.FOLLOW_RANGE)),
                     (t) -> FleePredicate == null || FleePredicate.test(t));
+        }
+    }
+    public static class KingSlimeSpawnMinionsGoal extends Goal{
+        private final KingSlimeEntity kSlime;
+        private final IntegerCycleTracker.Randomized spawnTimer;
+        public KingSlimeSpawnMinionsGoal(KingSlimeEntity kSlime, int baseTimer, int timerClamp){
+            this.kSlime = kSlime;
+            this.spawnTimer = new IntegerCycleTracker.Randomized(baseTimer, timerClamp);
+        }
+        @Override
+        public boolean canUse() {
+            return kSlime.getTarget() != null && !(kSlime.getTarget() instanceof Slime) && kSlime.getSize() > 30 && !kSlime.level().isClientSide();
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+
+        @Override
+        public void tick() {
+            if (spawnTimer.tick()){
+                final int count = kSlime.random.nextInt(Math.max(kSlime.getSize() / 30, 1), Math.max(kSlime.getSize() / 20, 2));
+                for (int i = 0; i < count; i++){
+                    Vec3 direction = kSlime.getForward()
+                            .xRot((float)Math.toDegrees(-45f))
+                            .yRot((float)Math.toDegrees(kSlime.random.nextInt(-180, 181)));
+                    Vec3 spawnPos = kSlime.position().add(0, kSlime.getBbHeight(), 0).add(direction);
+                    spawnSlime(spawnPos, direction);
+                }
+            }
+        }
+        private void spawnSlime(Vec3 spawnPos, Vec3 direction) {
+            Slime slime = new Slime(EntityType.SLIME, kSlime.level()){
+                @Override
+                public void tick() {
+                    super.tick();
+                    if (this.tickCount > 300 * getSize()) discard();
+                }
+                @Override
+                protected boolean shouldDropLoot() {
+                    return false;
+                }
+                @Override
+                public void push(@NotNull Entity pEntity) {
+                    if (pEntity instanceof KingSlimeEntity) return;
+                    super.push(pEntity);
+                }
+                @Override
+                public boolean canCollideWith(@NotNull Entity pEntity) {
+                    return super.canCollideWith(pEntity) && !(pEntity instanceof KingSlimeEntity);
+                }
+                @Override
+                public boolean causeFallDamage(float pFallDistance, float pMultiplier, @NotNull DamageSource pSource) {
+                    return false;
+                }
+                @Override
+                protected boolean isDealsDamage() {
+                    return true;
+                }
+                @Override
+                protected float getAttackDamage() {
+                    return super.getAttackDamage() + 2;
+                }
+            };
+            slime.setCustomName(Component.literal("§2King Slime's Minion"));
+
+            AttributeInstance slimeSpeed = slime.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (slimeSpeed != null){
+                slimeSpeed.setBaseValue(slimeSpeed.getBaseValue() * 1.5);
+            }
+
+            slime.setSize(kSlime.random.nextInt(2,5), true);
+            slime.setPos(spawnPos);
+            slime.setDeltaMovement(direction.scale(kSlime.getSizeScale() * 0.1));
+            slime.setTarget(kSlime.getTarget());
+            kSlime.level().addFreshEntity(slime);
+        }
+    }
+
+    public static class BossEvent extends ServerBossEvent{
+        public int MaxProgress;
+        public BossEvent(Component pName, int maxProgress) {
+            super(pName, BossBarColor.GREEN, BossBarOverlay.PROGRESS);
+            this.MaxProgress = maxProgress;
+        }
+        public void generateAndSetProgress(int reference){
+            setProgress(Math.min((float) reference / MaxProgress, 1.0f));
+            System.out.println("Progress is now " + getProgress());
         }
     }
 }

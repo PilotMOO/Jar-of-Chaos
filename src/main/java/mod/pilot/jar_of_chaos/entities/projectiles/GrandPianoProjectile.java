@@ -303,6 +303,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         if (getState() != 1) return;
         setState(2);
         setDeltaMovement(Vec3.ZERO);
+        setPos(position().add(0, 1, 0));
         playSound(JarSounds.PIANO_CRASH.get(), 5f, 1f);
         SpawnCrashParticles();
 

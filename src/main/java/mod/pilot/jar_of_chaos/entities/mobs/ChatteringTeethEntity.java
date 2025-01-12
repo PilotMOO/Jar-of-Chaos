@@ -67,6 +67,7 @@ public class ChatteringTeethEntity extends PathfinderMob implements GeoEntity {
             setZLatchRotate(0);
         }
     }
+
     public void setAIState(state ordinal) {setAIState(ordinal.ordinal());}
     public static final EntityDataAccessor<Integer> Age = SynchedEntityData.defineId(ChatteringTeethEntity.class, EntityDataSerializers.INT);
     public int getAge(){return entityData.get(Age);}
