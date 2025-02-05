@@ -1,7 +1,9 @@
 package mod.pilot.jar_of_chaos;
 
 import com.mojang.logging.LogUtils;
+import mod.pilot.jar_of_chaos.blocks.JarBlocks;
 import mod.pilot.jar_of_chaos.data.worlddata.JarGeneralSaveData;
+import mod.pilot.jar_of_chaos.effects.JarEffects;
 import mod.pilot.jar_of_chaos.enchantments.JarEnchants;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.items.JarCreativeTabs;
@@ -32,14 +34,16 @@ public class JarOfChaos
 
         MinecraftForge.EVENT_BUS.register(this);
         JarItems.register(modEventBus);
+        JarBlocks.register(modEventBus);
         JarCreativeTabs.register(modEventBus);
         JarEntities.register(modEventBus);
         JarSounds.register(modEventBus);
         JarEnchants.register(modEventBus);
         JarParticles.register(modEventBus);
+        JarEffects.register(modEventBus);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC, "JoC_Config.toml");
-        Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_Config.toml").toString());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC, "JoC_config.toml");
+        Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_config.toml").toString());
 
         JesterArrowEventManager.RegisterAllEvents();
     }

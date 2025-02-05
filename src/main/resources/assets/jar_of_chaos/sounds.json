@@ -11,5 +11,17 @@
     "sounds": [
       "jar_of_chaos:chattering_teeth"
     ]
+  },
+  "kirby": {
+    "subtitles": "sounds.jar_of_chaos.kirby",
+    "sounds": [
+      "jar_of_chaos:kirby"
+    ]
+  },
+  "boing": {
+    "subtitles": "sounds.jar_of_chaos.boing",
+    "sounds": [
+      "jar_of_chaos:boing"
+    ]
   }
 }

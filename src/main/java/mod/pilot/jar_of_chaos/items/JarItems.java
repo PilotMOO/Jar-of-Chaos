@@ -23,6 +23,14 @@ public class JarItems {
     public static final RegistryObject<Item> CHATTERING_TEETH_SPAWN = ITEMS.register("chattering_teeth_spawn",
             () -> new ChatteringTeethSpawn(new Item.Properties()));
 
+    public static final RegistryObject<Item> SLIME_EFFIGY = ITEMS.register("slime_effigy",
+            () -> new SlimeEffigyItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> SLIME_ARROW = ITEMS.register("slime_arrow",
+            () -> new SlimeArrowItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> SLIME_BALL_WAND = ITEMS.register("slime_ball_wand",
+            () -> new slimeballWand(new Item.Properties()));
+
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
     }

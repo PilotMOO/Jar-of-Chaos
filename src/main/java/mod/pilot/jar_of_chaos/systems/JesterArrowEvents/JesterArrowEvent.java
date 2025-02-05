@@ -32,7 +32,7 @@ import static net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES;
 
 public abstract class JesterArrowEvent {
     /**
-     * Abstract class for all events called by the Jester Arrow projectile shot out from the Jester's Bow.
+     * Abstract class for all events called by the Jester Arrow projectiles shot out from the Jester's Bow.
      * When creating a new event, make sure to make and call a public static void that registers the event inside <code>JesterArrowEventManager</code>
      * using <code>JesterArrowEventManager.RegisterEvent(JesterArrowEvent)</code>
      * @param parent The arrow that the event is being called from. Unassigned (nulled) arrows will never have their methods called

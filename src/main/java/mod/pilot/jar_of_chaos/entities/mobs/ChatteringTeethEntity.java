@@ -10,6 +10,7 @@ import mod.pilot.jar_of_chaos.Config;
 import mod.pilot.jar_of_chaos.damagetypes.JarDamageTypes;
 import mod.pilot.jar_of_chaos.items.JarItems;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
+import mod.pilot.jar_of_chaos.systems.ChatteringTeethSoundManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -37,9 +38,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class ChatteringTeethEntity extends PathfinderMob implements GeoEntity {
     public ChatteringTeethEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
@@ -221,24 +220,27 @@ public class ChatteringTeethEntity extends PathfinderMob implements GeoEntity {
     @Override
     public void tick() {
         if (tickCount % 55 == 1 && level() instanceof ServerLevel server){
-            server.playSound(null, this, JarSounds.CHATTERING_TEETH.get(), SoundSource.HOSTILE, 1, 1);
+            ChatteringTeethSoundManager.RequestSoundAt(blockPosition(), server);
         }
         super.tick();
 
         setNoGravity(getAIState() == 2);
 
         if (getAge() > teethMaxAge){
-            if (getOwner() instanceof Player){
-                ItemEntity item = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(),
-                        new ItemStack(JarItems.CHATTERING_TEETH_SPAWN.get()));
-                item.setDeltaMovement(0, 0.25, 0);
-                level().addFreshEntity(item);
-            }
-            level().playSound(null, this, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.5f);
-            discard();
+            PopAsItem(true);
             return;
         }
         AgeBy1();
+    }
+    public void PopAsItem(boolean discard){
+        if (getOwner() instanceof Player){
+            ItemEntity item = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(),
+                    new ItemStack(JarItems.CHATTERING_TEETH_SPAWN.get()));
+            item.setDeltaMovement(0, 0.25, 0);
+            level().addFreshEntity(item);
+        }
+        level().playSound(null, this, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.5f);
+        if (discard) discard();
     }
 
     @Override
@@ -275,6 +277,12 @@ public class ChatteringTeethEntity extends PathfinderMob implements GeoEntity {
             entity.setDeltaMovement(getDeltaMovement().scale(0.75));
         }
         return flag;
+    }
+
+    @Override
+    public void die(@NotNull DamageSource source) {
+        if (random.nextDouble() <= 0.25) PopAsItem(false);
+        super.die(source);
     }
 
     private boolean ChatterLatchPredicate(LivingEntity target){

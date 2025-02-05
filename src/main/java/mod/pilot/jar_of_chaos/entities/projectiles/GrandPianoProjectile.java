@@ -134,7 +134,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
      * @param gravity How fast the piano will pick up speed when falling. Nullable, if null it will default to 0.05f
      * @param maxFallSpeed Terminal velocity of the piano. Nullable, if null it will default to 10f
      * @param damage How much damage the piano will do when hitting a target. Nullable, if null it will default to 10
-     * @return The newly created piano projectile
+     * @return The newly created piano projectiles
      */
     public static GrandPianoProjectile SpawnPiano(@Nullable Entity parent, Vec3 startingPos, @Nonnull Level level, double spawnHeight, @Nullable Float gravity, @Nullable Float maxFallSpeed, @Nullable Integer damage){
         GrandPianoProjectile piano = JarEntities.PIANO.get().create(level);
@@ -159,7 +159,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
      * @param gravity How fast the piano will pick up speed when falling. Nullable, if null it will default to 0.05f
      * @param maxFallSpeed Terminal velocity of the piano. Nullable, if null it will default to 10f
      * @param damage How much damage the piano will do when hitting a target. Nullable, if null it will default to 10
-     * @return The newly created piano projectile
+     * @return The newly created piano projectiles
      */
     public static GrandPianoProjectile SpawnPiano(@Nullable Entity parent, Entity victim, double spawnHeight, @Nullable Float gravity, @Nullable Float maxFallSpeed, @Nullable Integer damage){
         return SpawnPiano(parent, victim.position(), victim.level(), spawnHeight, gravity, maxFallSpeed, damage);
@@ -171,7 +171,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
      *                    You may feed in null here IF the parent is not null
      * @param level The level for the entity to be created in, cannot be null for obvious reasons
      * @param spawnHeight How high above the spawn position will the piano spawn
-     * @return The newly created piano projectile
+     * @return The newly created piano projectiles
      */
     public static GrandPianoProjectile SpawnPiano(@Nullable Entity parent, Vec3 startingPos, Level level, double spawnHeight){
         return SpawnPiano(parent, startingPos, level, spawnHeight, null, null, null);
@@ -181,7 +181,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
      * @param parent The "Owner" of the piano, Nullable. The Owner cannot be hurt by the piano
      * @param victim The target the piano is aiming for
      * @param spawnHeight How high above the spawn position will the piano spawn
-     * @return The newly created piano projectile
+     * @return The newly created piano projectiles
      */
     public static GrandPianoProjectile SpawnPiano(@Nullable Entity parent, Entity victim, double spawnHeight){
         return SpawnPiano(parent, victim.position(), victim.level(), spawnHeight, null, null, null);

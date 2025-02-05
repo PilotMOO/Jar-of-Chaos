@@ -3,10 +3,11 @@
   "package": "mod.pilot.jar_of_chaos.mixins",
   "compatibilityLevel": "JAVA_17",
   "refmap": "jar_of_chaos.refmap.json",
-  "mixins": [
-  ],
   "client": [
     "client.LevelRendererMixin"
   ],
-  "minVersion": "0.8"
+  "minVersion": "0.8",
+  "mixins": [
+    "server.ServerLevelReader"
+  ]
 }

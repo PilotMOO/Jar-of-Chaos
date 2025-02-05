@@ -8,14 +8,26 @@
   "item.jar_of_chaos.piano_wand": "Grand Piano Wand",
 
   "item.jar_of_chaos.chattering_teeth_spawn": "Chattering Teeth",
+  "item.jar_of_chaos.slime_effigy": "§aEffigy of Slime",
+  "item.jar_of_chaos.slime_arrow": "Bouncy Slime Arrow",
 
   "item.jar_of_chaos.chattering_teeth_spawn.tooltip": "Use code \"lambert\" at checkout for 20% off!",
 
+  "block.jar_of_chaos.slime_layer": "Slime Layer",
+
   "entity.jar_of_chaos.piano": "Grand Piano",
+  "entity.jar_of_chaos.jester_arrow": "Jester's Arrow",
+  "entity.jar_of_chaos.slime_ball": "Slime Ball",
+  "entity.jar_of_chaos.slime_arrow": "Bouncy Slime Arrow",
+
   "entity.jar_of_chaos.chattering_teeth": "Chattering Teeth",
   "entity.jar_of_chaos.king_slime": "King Slime",
 
+  "effect.jar_of_chaos.splat": "Splat!",
+
   "sounds.jar_of_chaos.piano_crash": "Piano crashing",
+  "sounds.jar_of_chaos.kirby": "Kirby",
+  "sounds.jar_of_chaos.boing": "Boing!",
 
   "death.attack.piano1": "%1$s forgot to look up",
   "death.attack.piano2": "%1$s got Loony-Toon'd",
@@ -30,5 +42,12 @@
 
   "creativetab.jar_tab": "Jar of Chaos",
 
-  "item.jar_of_chaos.jar_event.game_lost": "§7You just lost the game!"
+  "jar_of_chaos.slime_rain.start": "§aSlime is falling from the sky!",
+  "jar_of_chaos.slime_rain.boss_spawn": "§aKing Slime has awoken!",
+  "jar_of_chaos.slime_rain.end_generic": "§aSlime has stopped falling from the sky.",
+  "jar_of_chaos.slime_rain.end_bosskill": "§aKing Slime has been defeated!",
+
+  "item.jar_of_chaos.jar_event.game_lost": "§7You just lost the game!",
+  "jar_of_chaos.kirby_disconnect": "Kirby has fallen...",
+  "item.jar_of_chaos.slime_effigy.tooltip": "§7A strange wooden effigy covered in slime. You feel a small amount of magic permeating throughout the effigy, and you're tempted to raise it towards the sky..."
 }

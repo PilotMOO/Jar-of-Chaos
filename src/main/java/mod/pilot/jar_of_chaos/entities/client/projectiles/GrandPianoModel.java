@@ -6,9 +6,9 @@ import mod.pilot.jar_of_chaos.entities.projectiles.GrandPianoProjectile;
 import net.minecraft.resources.ResourceLocation;
 
 public class GrandPianoModel extends GeoModel<GrandPianoProjectile> {
-    private static final ResourceLocation model = new ResourceLocation(JarOfChaos.MOD_ID, "geo/entity/projectile/piano.geo.json");
-    private static final ResourceLocation texture = new ResourceLocation(JarOfChaos.MOD_ID, "textures/entity/projectile/piano_texture.png");
-    private static final ResourceLocation animation = new ResourceLocation(JarOfChaos.MOD_ID, "animations/entity/projectile/piano.animation.json");
+    private static final ResourceLocation model = new ResourceLocation(JarOfChaos.MOD_ID, "geo/entity/projectiles/piano.geo.json");
+    private static final ResourceLocation texture = new ResourceLocation(JarOfChaos.MOD_ID, "textures/entity/projectiles/piano_texture.png");
+    private static final ResourceLocation animation = new ResourceLocation(JarOfChaos.MOD_ID, "animations/entity/projectiles/piano.animation.json");
 
 
     @Override

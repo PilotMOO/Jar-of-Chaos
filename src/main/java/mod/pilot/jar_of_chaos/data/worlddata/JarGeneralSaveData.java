@@ -83,7 +83,7 @@ public class JarGeneralSaveData extends SavedData {
         public void pack(CompoundTag tag){
             ArrayList<SlimeRainPOI> toPack = SlimeRainManager.getPOIs();
             if (toPack == null){
-                System.err.println("[SLIME RAIN UNPACKER LOG] The POIs ArrayList in SlimeRainManager was null!");
+                System.err.println("[SLIME RAIN PACKER LOG] The POIs ArrayList in SlimeRainManager was null!");
                 return;
             }
 
@@ -104,7 +104,7 @@ public class JarGeneralSaveData extends SavedData {
                 tag.putDouble(builder.append("z").toString(), poi.position.z); builder.setLength(length);
                 builder.setLength(baseLength);
             }
-            System.out.println("Packed up " + index + " SlimeRainPOI's!");
+            System.out.println("[SLIME RAIN PACKER LOG] Packed up " + index + " SlimeRainPOI's!");
         }
         public void unpack(CompoundTag tag){
             SlimeRainManager.SetupPOIList();
@@ -129,7 +129,7 @@ public class JarGeneralSaveData extends SavedData {
                 SlimeRainManager.quietAddToPOIs(SlimeRainPOI.createFromBlueprint(kills, range, pos));
                 count++;
             }
-            System.out.println("Unpacked " + count + " SlimeRainPOI's!");
+            System.out.println("[SLIME RAIN PACKER LOG] Unpacked " + count + " SlimeRainPOI's!");
         }
     }
 }

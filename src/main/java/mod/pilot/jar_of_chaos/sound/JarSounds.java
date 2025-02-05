@@ -15,6 +15,8 @@ public class JarSounds {
 
     public static final RegistryObject<SoundEvent> PIANO_CRASH = registerSoundEvents("piano_crash");
     public static final RegistryObject<SoundEvent> CHATTERING_TEETH = registerSoundEvents("chattering_teeth");
+    public static final RegistryObject<SoundEvent> KIRBY = registerSoundEvents("kirby");
+    public static final RegistryObject<SoundEvent> BOING = registerSoundEvents("boing");
 
     private static RegistryObject<SoundEvent> registerSoundEvents(String name) {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(JarOfChaos.MOD_ID, name)));

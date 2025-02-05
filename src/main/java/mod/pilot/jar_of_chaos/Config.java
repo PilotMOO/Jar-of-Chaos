@@ -7,6 +7,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.awt.*;
 import java.io.File;
 import java.util.List;
 
@@ -22,11 +23,19 @@ public class Config
 
         public final ForgeConfigSpec.ConfigValue<String> fish_entity;
 
+        public final ForgeConfigSpec.ConfigValue<Double> slime_rain_chance;
+        public final ForgeConfigSpec.ConfigValue<Integer> slime_rain_poi_kills;
+        public final ForgeConfigSpec.ConfigValue<Integer> slime_rain_poi_range;
+        public final ForgeConfigSpec.ConfigValue<Integer> king_slime_starting_size;
+        public final ForgeConfigSpec.ConfigValue<Integer> slime_rain_min_duration;
+        public final ForgeConfigSpec.ConfigValue<Integer> slime_rain_max_duration;
+
         public final ForgeConfigSpec.ConfigValue<Boolean> pickup_teeth;
         public final ForgeConfigSpec.ConfigValue<Boolean> teeth_pvp;
         public final ForgeConfigSpec.ConfigValue<Integer> teeth_age;
 
         public final ForgeConfigSpec.ConfigValue<Boolean> should_pianos_crash_harder;
+        public final ForgeConfigSpec.ConfigValue<Boolean> should_kirby;
 
         public Server(ForgeConfigSpec.Builder builder){
             builder.push("Jar of Chaos config");
@@ -46,6 +55,21 @@ public class Config
 
             builder.pop();
 
+            builder.push("Slime Rain Configuration");
+            this.slime_rain_chance = builder.defineInRange("Chance for the slime rain to occur every natural rain storm (set to 0 to disable natural slime rains)",
+                    0.2d, 0d, 1d);
+            this.slime_rain_poi_kills = builder.defineInRange("How many kills are required for King Slime to spawn",
+                    100, 0, Integer.MAX_VALUE);
+            this.slime_rain_poi_range = builder.defineInRange("How many blocks a given Slime Rain POI spans",
+                    256, 0, Integer.MAX_VALUE);
+            this.king_slime_starting_size = builder.defineInRange("The starting size of King Slime when he first spawns in",
+                    200, 1, Integer.MAX_VALUE);
+            this.slime_rain_min_duration = builder.defineInRange("The MINIMUM duration of a slime rain event (CANNOT be higher than max duration)",
+                    10800, 0, Integer.MAX_VALUE - 1);
+            this.slime_rain_max_duration = builder.defineInRange("The MAXIMUM duration of a slime rain event (CANNOT be lower than min duration)",
+                    18000, 1, Integer.MAX_VALUE);
+            builder.pop();
+
             builder.push("Entity Configurable");
             teeth_age = builder.defineInRange("How long Chattering Teeth can exist for before being removed", 2400, 1, Integer.MAX_VALUE);
             pickup_teeth = builder.define("Should you be able to pick up other people's chattering teeth?", false);
@@ -54,6 +78,7 @@ public class Config
 
             builder.push("Stupid configs options");
             should_pianos_crash_harder = builder.define("Should the Grand Piano crash the entire FUCKING game if it hits a player?", false);
+            should_kirby = builder.define("Should Kirby fall?", false);
         }
     }
 
