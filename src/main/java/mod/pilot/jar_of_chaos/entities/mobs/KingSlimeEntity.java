@@ -15,6 +15,7 @@ import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -44,6 +45,7 @@ import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -181,23 +183,40 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     public static final EntityDataAccessor<Integer> TeleportTimer = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
     public int getTeleportTimer() { return entityData.get(TeleportTimer); }
     public void setTeleportTimer(int timer) { entityData.set(TeleportTimer, timer); }
-    public boolean TickTeleport(){
+    /*public boolean TickTeleport(){
         int timer = getTeleportTimer();
-        if (timer <= 0){
-            setTeleportTimer(-1);
+        if (timer == -1) return false;
+        else if (timer == 0){
+            if (isEmerging()) setTeleportTimer(-1);
+            else setTeleportTimer(53);
             return true;
         } else {
             setTeleportTimer(getTeleportTimer() - 1);
             return false;
         }
-    }
+    }*/
     public Vec3 teleportPosition;
-    public static final EntityDataAccessor<Boolean> IsTeleporting = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
-    public boolean isTeleporting() { return entityData.get(IsTeleporting); }
-    public void setTeleporting(boolean flag) { entityData.set(IsTeleporting, flag); }
+    public static final EntityDataAccessor<Boolean> IsTeleportAggressive = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
+    public boolean isTeleportAggressive() { return entityData.get(IsTeleportAggressive); }
+    public void setTeleportAggressive(boolean flag) { entityData.set(IsTeleportAggressive, flag); }
     public static final EntityDataAccessor<Boolean> TeleportEmerging = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean isEmerging() { return entityData.get(TeleportEmerging); }
     public void setEmerging(boolean flag) { entityData.set(TeleportEmerging, flag); }
+    public void SlimeTeleportToTarget(){
+        LivingEntity target = getTarget();
+        if (target != null){
+            SlimeTeleportTo(target.position(), true);
+        }
+    }
+    public void SlimeTeleportTo(Vec3 pos){
+        SlimeTeleportTo(pos, false);
+    }
+    public void SlimeTeleportTo(Vec3 pos, boolean aggressive){
+        teleportPosition = pos;
+        setTeleportTimer(68);
+        setEmerging(false);
+        setTeleportAggressive(aggressive);
+    }
 
     public static final EntityDataAccessor<Integer> PriorCameraType = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
     public int getOldCameraType(){return entityData.get(PriorCameraType);}
@@ -211,7 +230,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         tag.putInt("LargestSize", entityData.get(LargestSize));
         tag.putInt("TeleportTimer", getTeleportTimer());
         tag.putBoolean("TeleportEmerging", isEmerging());
-        tag.putBoolean("Teleporting", isTeleporting());
+        tag.putBoolean("TeleportAggro", isTeleportAggressive());
         if (teleportPosition != null){
             tag.putDouble("teleportPosX", teleportPosition.x);
             tag.putDouble("teleportPosY", teleportPosition.y);
@@ -228,7 +247,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         setSize(tag.getInt("Size"));
         forceSetLargestSize(tag.getInt("LargestSize"));
         setTeleportTimer(tag.getInt("TeleportTimer"));
-        setTeleporting(tag.getBoolean("Teleporting"));
+        setTeleportAggressive(tag.getBoolean("TeleportAggro"));
         setEmerging(tag.getBoolean("TeleportEmerging"));
         if (tag.contains("teleportPosX")){
             teleportPosition = new Vec3(
@@ -249,7 +268,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         entityData.define(Size, 1);
         entityData.define(LargestSize, 1);
         entityData.define(TeleportTimer, -1);
-        entityData.define(IsTeleporting, false);
+        entityData.define(IsTeleportAggressive, false);
         entityData.define(TeleportEmerging, false);
         entityData.define(Fleeing, false);
         entityData.define(FromSlimeRain, false);
@@ -330,7 +349,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         wasOnGround = onGround();
 
         if (isFleeing()){
-            if (sweat-- <= 0){
+            if (--sweat <= 0){
                 int lowerBound = (int)(i * 0.5);
                 int upperBound = (i * 2) + 1;
                 if (lowerBound >= 0 || upperBound >= 1){
@@ -364,25 +383,34 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
             if (flag) playSound(SoundEvents.ITEM_PICKUP, 1f, 2f);
         }
 
-        if (TickTeleport()){
-            if (teleportPosition != null && !isEmerging()){
+        if (tickCount % 80 == 0 && isInWall()){
+            SlimeTeleportTo(findSurfaceAt(level(), position().add(
+                    random.nextInt(-16, 16), 0, random.nextInt(-16, 16)
+            )));
+        }
+
+        int oldTeleportTimer = getTeleportTimer();
+        if (oldTeleportTimer > -1){
+            setTeleportTimer(oldTeleportTimer - 1);
+
+            if (isTeleportAggressive() && getTarget() != null && !isEmerging() && oldTeleportTimer % 20 == 0 && random.nextBoolean()){
+                teleportPosition = getTarget().position();
+            }
+
+            if (oldTeleportTimer == 38 && teleportPosition != null && !isEmerging()){
                 teleportTo(teleportPosition.x, teleportPosition.y, teleportPosition.z);
                 teleportPosition = null;
-                setTeleportTimer(40);
                 setEmerging(true);
-            } else {
+            } else if (oldTeleportTimer == 0) {
                 setTeleportTimer(-1);
                 setEmerging(false);
+                setTeleportAggressive(false);
             }
-        } else if (getTarget() != null && !isEmerging()
-                && getTeleportTimer() != -1 && getTeleportTimer() % 20 == 0
-                && random.nextBoolean()){
-            teleportPosition = getTarget().position();
         }
     }
 
     protected SoundEvent getHurtSound(@NotNull DamageSource pDamageSource) {
-        return getSize() < 10 ? SoundEvents.SLIME_HURT_SMALL : SoundEvents.SLIME_HURT;
+        return getSize() < fleeSize ? SoundEvents.SLIME_HURT_SMALL : SoundEvents.SLIME_HURT;
     }
 
     protected SoundEvent getDeathSound() {
@@ -399,6 +427,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     public boolean hurt(@NotNull DamageSource pSource, float amount) {
         if (pSource.is(DamageTypes.IN_WALL) || isEmerging()) return false;
 
+        final int oldSize = getSize();
         if (pSource.getEntity() != null && pSource.getEntity().isPassenger()) amount /= 4;
         boolean flag = super.hurt(pSource, amount);
         if (flag){
@@ -422,6 +451,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
 
             if (pSource.getEntity() instanceof ServerPlayer p) bossEvent.addPlayer(p);
         }
+        if (oldSize > fleeSize && getSize() < fleeSize) invulnerableTime = 40;
         return flag;
     }
     @Override
@@ -437,6 +467,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
                 }
 
                 Minecraft minecraft = Minecraft.getInstance();
+                if (minecraft.player == null) return;
                 if (LE instanceof Player p && p.getGameProfile() == minecraft.player.getGameProfile()){
                     if (getOldCameraType() == -1){
                         setOldCameraType(minecraft.options.getCameraType().ordinal());
@@ -457,6 +488,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
                         LE.startRiding(this, true);
                         if (LE == getTarget()) {
                             setTeleportTimer(-1);
+                            setEmerging(false);
                             teleportPosition = null;
                         }
                     }
@@ -537,7 +569,8 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         controllers.add(new AnimationController<>(this, "KingSlimeManager", event ->{
             if (getTeleportTimer() != -1){
                 return event.setAndContinue(RawAnimation.begin()
-                        .then(isEmerging() ? "teleport_end" : "teleport", Animation.LoopType.PLAY_ONCE));
+                        .then(/*isEmerging() ? "teleport_end" : */"teleport_full", Animation.LoopType.PLAY_ONCE)
+                        .thenLoop("idle"));
             } else return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
         }));
     }
@@ -546,6 +579,21 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    private static Vec3 findSurfaceAt(Level level, Vec3 position) {
+        BlockPos.MutableBlockPos mBPos = BlockPos.containing(position).mutable();
+        BlockState bState;
+        do{
+            mBPos.move(0, 1, 0);
+            bState = level.getBlockState(mBPos);
+        }
+        while (!bState.isAir() && !level.canSeeSky(mBPos));
+        while (level.getBlockState(mBPos.below()).isAir()){
+            mBPos.move(0, -1, 0);
+            bState = level.getBlockState(mBPos);
+        }
+        return mBPos.getCenter();
     }
 
     public static class KingSlimeAttackGoal extends Goal {
@@ -799,7 +847,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         @Override
         public void start() {
             kSlime.setFleeing(true);
-            kSlime.setTeleporting(false);
+            kSlime.setTeleportAggressive(false);
             kSlime.setEmerging(false);
             kSlime.setTeleportTimer(-1);
             kSlime.teleportPosition = null;
@@ -964,17 +1012,15 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         public void start() {
             LivingEntity target = kSlime.getTarget();
             if (target != null) {
-                kSlime.teleportPosition = target.position();
-                kSlime.setTeleportTimer(30);
-                kSlime.setEmerging(false);
+                kSlime.SlimeTeleportToTarget();
             }
             activeCD = cooldown;
         }
 
         @Override
         public void stop() {
-            kSlime.setTeleportTimer(-1);
-            kSlime.setEmerging(false);
+            /*kSlime.setTeleportTimer(-1);
+            kSlime.setEmerging(false);*/
         }
     }
 
@@ -986,7 +1032,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         }
         public void generateAndSetProgress(int reference){
             setProgress(Math.min((float) reference / MaxProgress, 1.0f));
-            System.out.println("Progress is now " + getProgress());
         }
     }
 }

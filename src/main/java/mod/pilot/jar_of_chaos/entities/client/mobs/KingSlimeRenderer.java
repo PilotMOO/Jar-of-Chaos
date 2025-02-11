@@ -25,6 +25,10 @@ public class KingSlimeRenderer extends GeoEntityRenderer<KingSlimeEntity> {
         float scale = kSlime.getSizeScale();
         getGeoModel().getBone("Crown").ifPresent(crown -> {
             //crown.setPosY(1f + (kSlime.getSize() * 0.25f));
+            crown.setHidden(false);
+            if (kSlime.getTeleportTimer() != -1 && kSlime.getTeleportTimer() >= 48 && kSlime.getTeleportTimer() <= 38 && !kSlime.isEmerging()){
+                crown.setHidden(true);
+            }
             crown.setScaleX(1.5f / scale);
             crown.setScaleY(1.5f / scale);
             crown.setScaleZ(1.5f / scale);
