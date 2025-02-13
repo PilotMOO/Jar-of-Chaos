@@ -30,6 +30,8 @@ public class JarCreativeTabs {
 
                         register.accept(JarItems.SLIME_EFFIGY.get());
                         register.accept(JarItems.SLIME_ARROW.get());
+
+                        register.accept(JarItems.SLIMEOID_MANAGER.get());
                     })
                     .build());
 }

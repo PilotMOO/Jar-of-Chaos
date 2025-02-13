@@ -11,6 +11,7 @@ import mod.pilot.jar_of_chaos.items.JarItems;
 import mod.pilot.jar_of_chaos.particles.JarParticles;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
 import mod.pilot.jar_of_chaos.systems.JesterArrowEvents.JesterArrowEventManager;
+import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.SlimeoidManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -46,5 +47,6 @@ public class JarOfChaos
         Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_config.toml").toString());
 
         JesterArrowEventManager.RegisterAllEvents();
+        SlimeoidManager.Register();
     }
 }

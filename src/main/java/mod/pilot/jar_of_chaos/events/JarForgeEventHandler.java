@@ -13,6 +13,7 @@ import mod.pilot.jar_of_chaos.entities.projectiles.JesterArrowProjectile;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
 import mod.pilot.jar_of_chaos.systems.ChatteringTeethSoundManager;
 import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
+import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.SlimeoidManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;
@@ -203,7 +204,7 @@ public class JarForgeEventHandler {
         }
     }
     private static boolean isBouncy(Player player){
-        return player.hasEffect(JarEffects.SPLAT.get());
+        return player.hasEffect(JarEffects.SPLAT.get()) || SlimeoidManager.isActiveSlimeoid(player);
     }
     private record BounceInstance(Player player, Vec3 oldDelta) {
         public BounceInstance(@NotNull Player player, @NotNull Vec3 oldDelta){

@@ -451,7 +451,7 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
 
             if (pSource.getEntity() instanceof ServerPlayer p) bossEvent.addPlayer(p);
         }
-        if (oldSize > fleeSize && getSize() < fleeSize) invulnerableTime = 40;
+        if (oldSize > fleeSize && getSize() < fleeSize) invulnerableTime = 80;
         return flag;
     }
     @Override
