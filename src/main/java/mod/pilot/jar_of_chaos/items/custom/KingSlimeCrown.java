@@ -7,14 +7,17 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
-import mod.pilot.jar_of_chaos.items.custom.client.JarRenderer;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.SlimeoidManager;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import mod.pilot.jar_of_chaos.JarOfChaos;
+import mod.pilot.jar_of_chaos.items.custom.client.KingSlimeCrownRenderer;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -23,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -40,21 +44,37 @@ public class KingSlimeCrown extends ArmorItem implements GeoItem {
                                                                              @NotNull Player player, @NotNull InteractionHand hand) {
         InteractionResultHolder<ItemStack> holder = super.swapWithEquipmentSlot(item, level, player, hand);
         if (player.getItemBySlot(EquipmentSlot.HEAD).is(this)){
-            SlimeoidManager.addPlayerAsSlimeoid(player);
-        } else SlimeoidManager.removePlayerFromSlimeoid(player);
+            GeloidManager.addPlayerAsGeloid(player);
+        } else GeloidManager.removePlayerFromGeloid(player);
         return holder;
+    }
+
+    @Override
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotID, boolean isSelected) {
+        if (entity instanceof Player p && !GeloidManager.isActiveGeloid(p)){
+            if (p.getItemBySlot(EquipmentSlot.HEAD).is(this)) {
+                GeloidManager.addPlayerAsGeloid(p);
+            } else GeloidManager.removePlayerFromGeloid(p);
+        }
+        super.inventoryTick(stack, level, entity, slotID, isSelected);
+    }
+
+    @Override
+    public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return JarOfChaos.MOD_ID + ":textures/item/king_slime_crown_texture.png";
     }
 
     @Override
     public void createRenderer(Consumer<Object> consumer) {
         consumer.accept(new RenderProvider() {
-            private JarRenderer renderer = null;
+            private KingSlimeCrownRenderer renderer = null;
 
             @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            public HumanoidModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<LivingEntity> original) {
                 if (renderer == null) {
-                    renderer = new JarRenderer();
+                    renderer = new KingSlimeCrownRenderer();
                 }
+                renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
                 return this.renderer;
             }
         });

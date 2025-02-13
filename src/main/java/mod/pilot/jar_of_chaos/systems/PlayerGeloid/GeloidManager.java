@@ -1,4 +1,4 @@
-package mod.pilot.jar_of_chaos.systems.PlayerSlimeoid;
+package mod.pilot.jar_of_chaos.systems.PlayerGeloid;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -12,85 +12,85 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SlimeoidManager {
+public class GeloidManager {
     public static void Register(){
-        MinecraftForge.EVENT_BUS.addListener(SlimeoidManager::SlimeoidPacketTick);
-        MinecraftForge.EVENT_BUS.addListener(SlimeoidManager::SlimeoidFallReader);
-        MinecraftForge.EVENT_BUS.addListener(SlimeoidManager::ServerEndCleaning);
+        MinecraftForge.EVENT_BUS.addListener(GeloidManager::GeloidPacketTick);
+        MinecraftForge.EVENT_BUS.addListener(GeloidManager::GeloidFallReader);
+        MinecraftForge.EVENT_BUS.addListener(GeloidManager::ServerEndCleaning);
     }
 
-    private static final ArrayList<Player> activeSlimeoids = new ArrayList<>();
-    private static final HashMap<Player, SlimeoidPacket> slimeoidPacketMap = new HashMap<>();
-    public static @Nullable SlimeoidPacket getPacketFor(Player p){
-        return slimeoidPacketMap.getOrDefault(p, null);
+    private static final ArrayList<Player> activeGeloids = new ArrayList<>();
+    private static final HashMap<Player, GeloidPacket> GeloidPacketMap = new HashMap<>();
+    public static @Nullable GeloidPacket getPacketFor(Player p){
+        return GeloidPacketMap.getOrDefault(p, null);
     }
-    public static @NotNull SlimeoidPacket getOrCreatePacketFor(Player p){
-        return slimeoidPacketMap.computeIfAbsent(p, (P) -> new SlimeoidPacket(1));
+    public static @NotNull GeloidManager.GeloidPacket getOrCreatePacketFor(Player p){
+        return GeloidPacketMap.computeIfAbsent(p, (P) -> new GeloidPacket(1));
     }
-    private static ArrayList<SlimeoidPacket> getAllPackets(){
-        ArrayList<SlimeoidPacket> packets = new ArrayList<>();
-        for (Player p : getSlimeoids()){
-            SlimeoidPacket packet = getPacketFor(p);
+    private static ArrayList<GeloidPacket> getAllPackets(){
+        ArrayList<GeloidPacket> packets = new ArrayList<>();
+        for (Player p : getGeloids()){
+            GeloidPacket packet = getPacketFor(p);
             if (packet != null) packets.add(packet);
         }
         return packets;
     }
-    private static void ClearSlimeoids(){
-        activeSlimeoids.clear();
-        slimeoidPacketMap.clear();
+    private static void ClearGeloids(){
+        activeGeloids.clear();
+        GeloidPacketMap.clear();
     }
-    public static void addPlayerAsSlimeoid(Player p){
-        activeSlimeoids.add(p);
-        slimeoidPacketMap.put(p, new SlimeoidPacket(1));
+    public static void addPlayerAsGeloid(Player p){
+        activeGeloids.add(p);
+        GeloidPacketMap.put(p, new GeloidPacket(1));
     }
-    public static void removePlayerFromSlimeoid(Player p){
-        activeSlimeoids.remove(p);
-        slimeoidPacketMap.remove(p);
+    public static void removePlayerFromGeloid(Player p){
+        activeGeloids.remove(p);
+        GeloidPacketMap.remove(p);
     }
-    public static ArrayList<Player> getSlimeoids(){
-        return new ArrayList<>(activeSlimeoids);
+    public static ArrayList<Player> getGeloids(){
+        return new ArrayList<>(activeGeloids);
     }
-    public static boolean isActiveSlimeoid(Player p){
-        return getSlimeoids().contains(p);
+    public static boolean isActiveGeloid(Player p){
+        return getGeloids().contains(p);
     }
-    public static boolean isActiveSlimeoid(LivingEntity l){
-        return l instanceof Player p && isActiveSlimeoid(p);
+    public static boolean isActiveGeloid(LivingEntity l){
+        return l instanceof Player p && isActiveGeloid(p);
     }
 
-    public static void SlimeoidPacketTick(TickEvent.ServerTickEvent event){
-        for (SlimeoidPacket packet : getAllPackets()){
+    public static void GeloidPacketTick(TickEvent.ServerTickEvent event){
+        for (GeloidPacket packet : getAllPackets()){
             if (packet.squishAmount != -1){
                 packet.Age();
                 System.out.println(packet);
             }
         }
     }
-    public static void SlimeoidFallReader(LivingFallEvent event){
-        if (isActiveSlimeoid(event.getEntity())){
+    public static void GeloidFallReader(LivingFallEvent event){
+        if (isActiveGeloid(event.getEntity())){
             Player player = (Player)event.getEntity();
-            SlimeoidPacket packet = getOrCreatePacketFor(player);
+            GeloidPacket packet = getOrCreatePacketFor(player);
             double distanceSqr = event.getDistance() * event.getDistance();
             packet.ImpactSquish((float)(1 - (distanceSqr / (distanceSqr + 100))));
         }
     }
     public static void ServerEndCleaning(ServerStoppedEvent event){
-        ClearSlimeoids();
+        ClearGeloids();
     }
 
-    public static class SlimeoidPacket{
+    public static class GeloidPacket {
         public float squishAmount;
         public float expectedOversquish;
         public float activeSquishAmount;
         public float squishDuration;
         private float age;
-        public SlimeoidPacket(float squishAmount, float expectedOversquish){
+        public GeloidPacket(float squishAmount, float expectedOversquish){
             this.squishAmount = squishAmount;
             this.expectedOversquish = expectedOversquish;
             activeSquishAmount = 1f;
             squishDuration = 0;
             age = 0;
         }
-        public SlimeoidPacket(float squishAmount){
+        public GeloidPacket(float squishAmount){
             this(squishAmount, 1f);
         }
 
@@ -133,7 +133,7 @@ public class SlimeoidManager {
 
         @Override
         public String toString() {
-            return "SlimeoidPacket [squishAmount : " + squishAmount
+            return "GeloidPacket [squishAmount : " + squishAmount
                     + ", expectedOversquish : " + expectedOversquish
                     + ", activeSquishAmount : " + activeSquishAmount
                     + ", squishDuration : " + squishDuration

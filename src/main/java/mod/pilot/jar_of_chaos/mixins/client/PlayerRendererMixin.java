@@ -1,10 +1,10 @@
 package mod.pilot.jar_of_chaos.mixins.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.SlimeoidManager;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.client.SlimSlimeoidModel;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.client.SlimeoidLayer;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.client.SlimeoidModel;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.client.SlimGeloidModel;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.client.GeloidLayer;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.client.GeloidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -25,7 +25,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     at = @At(value = "HEAD"))
     private void InjectSquish(AbstractClientPlayer pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack,
                               MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci){
-        SlimeoidManager.SlimeoidPacket packet = SlimeoidManager.getPacketFor(pEntity);
+        GeloidManager.GeloidPacket packet = GeloidManager.getPacketFor(pEntity);
         if (packet != null){
             float vLerp = packet.LerpSquish(true);
             float hLerp = 1 + ((1 - vLerp));
@@ -34,9 +34,9 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     }
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void InjectSlimeoidLayer(EntityRendererProvider.Context pContext, boolean pUseSlimModel, CallbackInfo ci){
-        this.addLayer(new SlimeoidLayer<>(this,
-                pContext.bakeLayer(pUseSlimModel ? SlimSlimeoidModel.LAYER_LOCATION : SlimeoidModel.LAYER_LOCATION),
+    private void InjectGeloidLayer(EntityRendererProvider.Context pContext, boolean pUseSlimModel, CallbackInfo ci){
+        this.addLayer(new GeloidLayer<>(this,
+                pContext.bakeLayer(pUseSlimModel ? SlimGeloidModel.LAYER_LOCATION : GeloidModel.LAYER_LOCATION),
                 pUseSlimModel));
     }
 }

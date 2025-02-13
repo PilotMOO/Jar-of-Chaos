@@ -13,7 +13,7 @@ import mod.pilot.jar_of_chaos.entities.projectiles.JesterArrowProjectile;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
 import mod.pilot.jar_of_chaos.systems.ChatteringTeethSoundManager;
 import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.SlimeoidManager;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;
@@ -35,6 +35,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -158,6 +159,13 @@ public class JarForgeEventHandler {
         }
     }
 
+    @SubscribeEvent
+    public static void GeloidSlimeTargetHook(LivingChangeTargetEvent event){
+        if (event.getEntity() instanceof Slime && GeloidManager.isActiveGeloid(event.getNewTarget())){
+            event.setCanceled(true);
+        }
+    }
+
 
     //Player Bounce Handler (special thanks to the devs of TConstruct for having a public GitHub <3)
 
@@ -204,7 +212,7 @@ public class JarForgeEventHandler {
         }
     }
     private static boolean isBouncy(Player player){
-        return player.hasEffect(JarEffects.SPLAT.get()) || SlimeoidManager.isActiveSlimeoid(player);
+        return player.hasEffect(JarEffects.SPLAT.get()) || GeloidManager.isActiveGeloid(player);
     }
     private record BounceInstance(Player player, Vec3 oldDelta) {
         public BounceInstance(@NotNull Player player, @NotNull Vec3 oldDelta){

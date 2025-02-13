@@ -1,7 +1,7 @@
 package mod.pilot.jar_of_chaos.mixins.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.pilot.jar_of_chaos.systems.PlayerSlimeoid.SlimeoidManager;
+import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -33,19 +33,19 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity> extends 
     @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
     at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"),
     index = 7)
-    public float InjectSlimeoidHexAlpha(float par5){
-        return SlimeoidManager.isActiveSlimeoid(jarOfChaos$activeParent) ? 0.8f : par5;
+    public float InjectGeloidHexAlpha(float par5){
+        return GeloidManager.isActiveGeloid(jarOfChaos$activeParent) ? 0.8f : par5;
     }
     @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"),
             index = 6)
-    public float InjectSlimeoidHexBlue(float par5){
-        return SlimeoidManager.isActiveSlimeoid(jarOfChaos$activeParent) ? 0.66f : par5;
+    public float InjectGeloidHexBlue(float par5){
+        return GeloidManager.isActiveGeloid(jarOfChaos$activeParent) ? 0.66f : par5;
     }
     @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V"),
             index = 4)
-    public float InjectSlimeoidHexRed(float par5){
-        return SlimeoidManager.isActiveSlimeoid(jarOfChaos$activeParent) ? 0.66f : par5;
+    public float InjectGeloidHexRed(float par5){
+        return GeloidManager.isActiveGeloid(jarOfChaos$activeParent) ? 0.66f : par5;
     }
 }
