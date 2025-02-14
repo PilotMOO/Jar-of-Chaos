@@ -6,7 +6,6 @@ import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.renderer.GeoArmorRenderer;
 import mod.pilot.jar_of_chaos.items.custom.KingSlimeCrown;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.EquipmentSlot;

@@ -8,10 +8,14 @@
   "item.jar_of_chaos.piano_wand": "Grand Piano Wand",
 
   "item.jar_of_chaos.chattering_teeth_spawn": "Chattering Teeth",
+  "item.jar_of_chaos.chattering_teeth_spawn.tooltip": "Use code \"lambert\" at checkout for 20% off!",
   "item.jar_of_chaos.slime_effigy": "§aEffigy of Slime",
   "item.jar_of_chaos.slime_arrow": "Bouncy Slime Arrow",
+  "item.jar_of_chaos.king_slime_crown": "§aSlime King's Crown",
+  "item.jar_of_chaos.king_slime_crown.tooltip": "§7A large crown made of pure gold, decorated with numerous glittering gemstones. This crown used to belong to the (now late) King Slime, lord of all things slimy. A strange magic seems to emanate from within the crown... §6What if you put it on?",
+  "item.jar_of_chaos.king_slime_crown.tooltip_advanced": "§8This crown transforms the wearer into a Royal Geloid. While in this state, they are immune to fall damage and will bounce when colliding with the ground. All slimes are passive towards the wearer. [MORE FEATURES PLANNED]",
 
-  "item.jar_of_chaos.chattering_teeth_spawn.tooltip": "Use code \"lambert\" at checkout for 20% off!",
+  "item.jar_of_chaos.advanced_tooltip_hint": "§8[Enable Advanced Tooltips for more info]",
 
   "block.jar_of_chaos.slime_layer": "Slime Layer",
 

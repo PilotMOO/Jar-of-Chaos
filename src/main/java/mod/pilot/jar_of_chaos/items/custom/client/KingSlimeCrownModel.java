@@ -7,7 +7,7 @@ import mod.pilot.jar_of_chaos.items.custom.KingSlimeCrown;
 import net.minecraft.resources.ResourceLocation;
 
 public class KingSlimeCrownModel extends GeoModel<KingSlimeCrown> {
-    private static final ResourceLocation model = new ResourceLocation(JarOfChaos.MOD_ID, "geo/item/king_slime_crown.geo.json");
+    private static final ResourceLocation model = new ResourceLocation(JarOfChaos.MOD_ID, "geo/item/king_slime_crown_armor.geo.json");
     private static final ResourceLocation texture = new ResourceLocation(JarOfChaos.MOD_ID, "textures/item/king_slime_crown_texture.png");
     private static final ResourceLocation animation = new ResourceLocation(JarOfChaos.MOD_ID, "animations/item/king_slime_crown.animation.json");
     @Override

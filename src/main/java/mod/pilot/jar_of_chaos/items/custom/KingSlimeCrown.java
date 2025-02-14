@@ -11,6 +11,7 @@ import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.items.custom.client.KingSlimeCrownRenderer;
 import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -19,15 +20,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -51,12 +50,23 @@ public class KingSlimeCrown extends ArmorItem implements GeoItem {
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotID, boolean isSelected) {
-        if (entity instanceof Player p && !GeloidManager.isActiveGeloid(p)){
+        if (entity instanceof Player p){
             if (p.getItemBySlot(EquipmentSlot.HEAD).is(this)) {
-                GeloidManager.addPlayerAsGeloid(p);
+                if (!GeloidManager.isActiveGeloid(p)) GeloidManager.addPlayerAsGeloid(p);
             } else GeloidManager.removePlayerFromGeloid(p);
         }
         super.inventoryTick(stack, level, entity, slotID, isSelected);
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag isAdvanced) {
+        components.add(Component.translatable("item.jar_of_chaos.king_slime_crown.tooltip"));
+        if (isAdvanced.isAdvanced()){
+            components.add(Component.translatable("item.jar_of_chaos.king_slime_crown.tooltip_advanced"));
+        } else {
+            components.add(Component.translatable("item.jar_of_chaos.advanced_tooltip_hint"));
+        }
+        super.appendHoverText(stack, level, components, isAdvanced);
     }
 
     @Override
