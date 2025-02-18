@@ -10,6 +10,8 @@
   ],
   "minVersion": "0.8",
   "mixins": [
+    "common.PlayerMixin",
+    "common.SlimeMixin",
     "server.ServerLevelReader"
   ]
 }

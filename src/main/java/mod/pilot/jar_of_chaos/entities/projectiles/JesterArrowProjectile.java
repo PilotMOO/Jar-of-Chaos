@@ -70,10 +70,8 @@ public class JesterArrowProjectile extends AbstractArrow implements GeoEntity {
     }
     public void GenerateRandomEvent(@Nullable ArrayList<Class<? extends JesterArrowEvent>> toAvoid){
         Pair<JesterArrowEvent, Integer> pair = JesterArrowEventManager.createNewRandomEvent(this, toAvoid);
-        if (pair != null){
-            Event = pair.getA();
-            setEventIndex(pair.getB());
-        }
+        Event = pair.getA();
+        setEventIndex(pair.getB());
     }
 
     @Override

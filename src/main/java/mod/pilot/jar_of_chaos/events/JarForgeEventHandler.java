@@ -9,10 +9,7 @@ import mod.pilot.jar_of_chaos.data.worlddata.JarGeneralSaveData;
 import mod.pilot.jar_of_chaos.effects.JarEffects;
 import mod.pilot.jar_of_chaos.effects.SplatEffect;
 import mod.pilot.jar_of_chaos.entities.mobs.KingSlimeEntity;
-import mod.pilot.jar_of_chaos.entities.projectiles.JesterArrowProjectile;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
-import mod.pilot.jar_of_chaos.systems.ChatteringTeethSoundManager;
-import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
 import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
@@ -33,7 +30,6 @@ import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -60,7 +56,6 @@ public class JarForgeEventHandler {
     @SubscribeEvent
     public static void getServerFromStarting(ServerStartingEvent event){
         Overworld = event.getServer().overworld();
-        JarEventHandler.PopulateEventPool(Overworld);
     }
     @SubscribeEvent
     public static void ServerStart(ServerStartedEvent event){
@@ -70,16 +65,8 @@ public class JarForgeEventHandler {
 
     @SubscribeEvent
     public static void ServerStop(ServerStoppedEvent event){
-        JarEventHandler.PurgeAllEvents();
-        System.out.println("[JAR EVENT HANDLER] Clearing out all Events");
-        SlimeRainManager.FlushPOIs();
-        System.out.println("[SLIME RAIN EVENT HANDLER] Flushing POIs");
-        SlimeRainManager.resetAllTrackers();
-        System.out.println("[SLIME RAIN EVENT HANDLER] Resetting all Trackers");
         SplatEffect.Flush();
         System.out.println("[SPLAT EFFECT HANDLER] Flushing all tracked velocities");
-        ChatteringTeethSoundManager.Flush();
-        System.out.println("[CHATTERING TEETH SFX HANDLER] Flushing all tracked sound positions");
     }
 
     private static final boolean kirby = Config.SERVER.should_kirby.get();
@@ -104,35 +91,6 @@ public class JarForgeEventHandler {
     public static void KirbyPlayerJoin(EntityJoinLevelEvent event){
         if (kirby && event.getEntity() instanceof ServerPlayer sp){
             playerKirbyMap.put(sp, 0);
-        }
-    }
-
-    @SubscribeEvent
-    public static void JarServerTicker(TickEvent.ServerTickEvent event){
-        JarEventHandler.TickAllEvents();
-        if (JarGeneralSaveData.isSlimeRain()) SlimeRainManager.TickSlimeRain(event.getServer().overworld());
-        ChatteringTeethSoundManager.tick();
-    }
-    @SubscribeEvent
-    public static void SlimeDeathTracker(EntityLeaveLevelEvent event){
-        if (!JarGeneralSaveData.isSlimeRain() || !(event.getLevel() instanceof ServerLevel)) return;
-        Entity entity = event.getEntity();
-        if (event.getLevel().getEntitiesOfClass(KingSlimeEntity.class, entity.getBoundingBox().inflate(SlimeRainManager.POIRange)).size() > 0) {
-            System.out.println("Nearby slime king spotted, no longer awarding kills...");
-            return;
-        }
-        if (entity instanceof Slime slime && slime.isDeadOrDying()){
-            SlimeRainManager.AwardKillToNearestPOI(slime.position());
-            System.out.println("Awarded a kill to the nearest POI!");
-        }
-    }
-
-    @SubscribeEvent
-    public static void JesterArrowEventTracker(EntityJoinLevelEvent event){
-        if (event.getLevel().getServer() == null || !event.getLevel().getServer().isReady()) return;
-        Entity E = event.getEntity();
-        if (E instanceof JesterArrowProjectile J && J.Event != null && !J.getEventFired()){
-            J.Event.OnSpawn();
         }
     }
 
@@ -165,10 +123,30 @@ public class JarForgeEventHandler {
             event.setCanceled(true);
         }
     }
+    /*@SubscribeEvent
+    public static void GeloidRecruitListener(PlayerInteractEvent.EntityInteractSpecific event){
+        if (event.getTarget() instanceof Slime slime && GeloidManager.isActiveGeloid(event.getEntity())){
+            if (event.getItemStack().isEmpty()) System.out.println("AKSDJHFKL");
+            RoyalGeloidLoyaltyGoal goal = null;
+            for (Object obj : slime.goalSelector.getAvailableGoals().toArray()){
+                WrappedGoal wGoal = (WrappedGoal)obj;
+                if (wGoal.getGoal() instanceof RoyalGeloidLoyaltyGoal uGoal) {
+                    goal = uGoal;
+                    break;
+                }
+            }
+            if (goal != null){
+                if (goal.geloid != null) {
+                    goal.setGeloid(null);
+                    goal.stop();
+                }
+                else goal.setGeloid(event.getEntity());
+            }
+        }
+    }*/
 
 
     //Player Bounce Handler (special thanks to the devs of TConstruct for having a public GitHub <3)
-
     private static final ArrayList<BounceInstance> bouncingArrayList = new ArrayList<>();
     public static ArrayList<BounceInstance> getBounceInstances(){
         return new ArrayList<>(bouncingArrayList);

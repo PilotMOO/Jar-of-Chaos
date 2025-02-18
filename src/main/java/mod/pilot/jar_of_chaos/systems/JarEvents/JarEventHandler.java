@@ -5,12 +5,22 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
 public class JarEventHandler {
+    public static void Setup(){
+        MinecraftForge.EVENT_BUS.addListener(JarEventHandler::TickAllEvents);
+        MinecraftForge.EVENT_BUS.addListener(JarEventHandler::PopulateEventPool);
+        MinecraftForge.EVENT_BUS.addListener(JarEventHandler::ServerCloseCleanUp);
+    }
+
     private static final RandomSource random = RandomSource.create();
 
     private static final ArrayList<JarEvent> activeEvents = new ArrayList<>();
@@ -20,9 +30,9 @@ public class JarEventHandler {
     public static void AddToEvents(JarEvent event){
         activeEvents.add(event);
     }
-    public static void TickAllEvents(){
-        for (JarEvent event : getEvents()){
-            event.EventLifecycle();
+    public static void TickAllEvents(TickEvent.ServerTickEvent event){
+        for (JarEvent jEvent : getEvents()){
+            jEvent.EventLifecycle();
         }
     }
     public static boolean amISubscribed(JarEvent event){
@@ -42,8 +52,17 @@ public class JarEventHandler {
 
         activeEvents.removeAll(toRemove);
     }
-    public static void PurgeAllEvents(){
+    public static void PopulateEventPool(ServerStartedEvent event){
+        ServerLevel server = event.getServer().overworld();
+        AddToEventPool(new RandomExplode(server, (Entity)null));
+        AddToEventPool(new DisplacedContinuousExplosionEvent(600, server, null, null, 15));
+        AddToEventPool(new PigEvent(server, (Entity)null));
+        AddToEventPool(new LotsOfPigsEvent(server, (Entity)null, 10, 6));
+        AddToEventPool(new YouLostTheGameEvent(server, null));
+    }
+    public static void ServerCloseCleanUp(ServerStoppedEvent event){
         activeEvents.clear();
+        System.out.println("[JAR EVENT HANDLER] Clearing out all Events");
     }
 
     private static final ArrayList<JarEvent> EventPool = new ArrayList<>();
@@ -67,11 +86,5 @@ public class JarEventHandler {
         return getCloneFromEventPool(random.nextIntBetweenInclusive(range, bound), server, parent, pos);
     }
 
-    public static void PopulateEventPool(ServerLevel server){
-        AddToEventPool(new RandomExplode(server, (Entity)null));
-        AddToEventPool(new DisplacedContinuousExplosionEvent(600, server, null, null, 15));
-        AddToEventPool(new PigEvent(server, (Entity)null));
-        AddToEventPool(new LotsOfPigsEvent(server, (Entity)null, 10, 6));
-        AddToEventPool(new YouLostTheGameEvent(server, null));
-    }
+
 }

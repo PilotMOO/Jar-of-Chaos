@@ -38,15 +38,18 @@ public class KingSlimeCrown extends ArmorItem implements GeoItem {
         super(kSlimeCrownMaterial, Type.HELMET, pProperties.defaultDurability(-1));
     }
 
-    @Override
+
+    /*@Override
     public @NotNull InteractionResultHolder<ItemStack> swapWithEquipmentSlot(@NotNull Item item, @NotNull Level level,
                                                                              @NotNull Player player, @NotNull InteractionHand hand) {
         InteractionResultHolder<ItemStack> holder = super.swapWithEquipmentSlot(item, level, player, hand);
-        if (player.getItemBySlot(EquipmentSlot.HEAD).is(this)){
+        if (player.getItemBySlot(EquipmentSlot.HEAD).is(this) && !GeloidManager.isActiveGeloid(player)){
             GeloidManager.addPlayerAsGeloid(player);
-        } else GeloidManager.removePlayerFromGeloid(player);
+        } else {
+            GeloidManager.removePlayerFromGeloid(player);
+        }
         return holder;
-    }
+    }*/
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotID, boolean isSelected) {
@@ -57,6 +60,7 @@ public class KingSlimeCrown extends ArmorItem implements GeoItem {
         }
         super.inventoryTick(stack, level, entity, slotID, isSelected);
     }
+
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag isAdvanced) {
@@ -101,7 +105,7 @@ public class KingSlimeCrown extends ArmorItem implements GeoItem {
         AnimationController<GeoItem> animControl = new AnimationController<GeoItem>(this, "CrownAndCapeController",
                 event -> PlayState.CONTINUE)
                 .triggerableAnim("wave", RawAnimation.begin().thenLoop("wave"));
-        animControl.tryTriggerAnimation("wave");
+        //animControl.tryTriggerAnimation("wave");
         controllers.add(animControl);
     }
 
@@ -131,7 +135,7 @@ public class KingSlimeCrown extends ArmorItem implements GeoItem {
 
         @Override
         public @NotNull SoundEvent getEquipSound() {
-            return SoundEvents.ARMOR_EQUIP_GOLD;
+            return SoundEvents.SLIME_BLOCK_PLACE;
         }
 
         @Override

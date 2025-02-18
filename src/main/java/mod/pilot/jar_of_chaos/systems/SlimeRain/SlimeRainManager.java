@@ -13,12 +13,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +34,12 @@ import java.util.Random;
 import java.util.function.BiFunction;
 
 public class SlimeRainManager {
+    public static void Setup(){
+        MinecraftForge.EVENT_BUS.addListener(SlimeRainManager::TickSlimeRain);
+        MinecraftForge.EVENT_BUS.addListener(SlimeRainManager::SlimeDeathTracker);
+        MinecraftForge.EVENT_BUS.addListener(SlimeRainManager::ServerClosingCleanUp);
+    }
+
     private static final Random random = new Random();
 
     public static final int DefaultPOIRange = Config.SERVER.slime_rain_poi_range.get();
@@ -57,6 +68,7 @@ public class SlimeRainManager {
             POIs.clear();
             JarGeneralSaveData.Dirty();
         }
+        System.out.println("[SLIME RAIN EVENT HANDLER] Flushing POIs");
     }
 
     public static boolean finalizing = false;
@@ -68,14 +80,16 @@ public class SlimeRainManager {
     private static final IntegerCycleTracker KingSlimeKillCountTracker = new IntegerCycleTracker(100);
     private static final IntegerCycleTracker BossBarUpdateTracker = new IntegerCycleTracker(60);
     private static final IntegerCycleTracker RefreshRainTracker = new IntegerCycleTracker(100);
-    public static void resetAllTrackers(){
+    public static void ResetAllTrackers(){
         SlimeSpawnTracker.reset();
         SlimeBallProjTracker.reset();
         SlimeLayerTracker.reset();
         KingSlimeKillCountTracker.reset();
         BossBarUpdateTracker.reset();
         RefreshRainTracker.reset();
+        System.out.println("[SLIME RAIN EVENT HANDLER] Resetting all trackers");
     }
+
 
     public static void StartSlimeRain(ServerLevel server, int rainFor, boolean quiet){
         StartSlimeRain(server, rainFor, DefaultPOIRange, DefaultNeededKills, quiet);
@@ -95,8 +109,44 @@ public class SlimeRainManager {
             }
         }
     }
+    public static void StopSlimeRain(@Nullable ServerLevel server, boolean force, boolean quiet, boolean fromBoss){
+        if (force) finalizeSlimeRain(server, true, quiet, fromBoss);
+        else internalGradualStopSlimeRain(server, fromBoss);
+    }
+    private static void internalGradualStopSlimeRain(@Nullable ServerLevel server, boolean fromBoss){
+        JarGeneralSaveData.setSlimeRainDuration(180);
+        if (server != null) server.getLevelData().setRaining(false);
+        SlimeRainManager.fromBoss = fromBoss;
+        finalizing = true;
+    }
+    private static void finalizeSlimeRain(){
+        finalizeSlimeRain(null, false, true, false);
+    }
+    private static void finalizeSlimeRain(@Nullable ServerLevel server, boolean stopNormalRain, boolean quiet, boolean fromBoss){
+        for (SlimeRainPOI poi : POIs) poi.terminate();
+        POIs = null;
+        playerPOIMap.clear();
+        POIRange = DefaultPOIRange;
+        NeededKills = DefaultNeededKills;
+        finalizing = false;
+        ResetAllTrackers();
 
-    public static void TickSlimeRain(ServerLevel server){
+        JarGeneralSaveData.setSlimeRainDuration(0);
+        if (stopNormalRain && server != null) server.getLevelData().setRaining(false);
+        JarGeneralSaveData.Dirty();
+
+        if (!quiet && server != null){
+            for (ServerPlayer player : server.getPlayers((s) -> true)){
+                player.sendSystemMessage(Component.translatable(
+                        fromBoss ? "jar_of_chaos.slime_rain.end_bosskill" : "jar_of_chaos.slime_rain.end_generic"));
+            }
+        }
+    }
+
+
+    public static void TickSlimeRain(TickEvent.ServerTickEvent event){
+        ServerLevel server = event.getServer().overworld();
+        if (!JarGeneralSaveData.isSlimeRain()) return;
         JarGeneralSaveData.tickSlimeRainDuration();
 
         if (!JarGeneralSaveData.isSlimeRain()){
@@ -149,7 +199,7 @@ public class SlimeRainManager {
             }
         }
         if (KingSlimeKillCountTracker.tick()){
-            ArrayList<SlimeRainPOI> validPOIs = checkAndGatherPOIsWithKillCount(NeededKills);
+            ArrayList<SlimeRainPOI> validPOIs = CheckAndGatherPOIsWithKillCount(NeededKills);
             if (validPOIs != null){
                 for (SlimeRainPOI poi : validPOIs){
                     Vec3 pos = findSurfaceThenAdd(server, poi.position, 50);
@@ -176,41 +226,22 @@ public class SlimeRainManager {
         }
         if (RefreshRainTracker.tick()) server.getLevelData().setRaining(true);
     }
-
-    public static void StopSlimeRain(@Nullable ServerLevel server, boolean force, boolean quiet, boolean fromBoss){
-        if (force) finalizeSlimeRain(server, true, quiet, fromBoss);
-        else internalGradualStopSlimeRain(server, fromBoss);
+    public static void ServerClosingCleanUp(ServerStoppedEvent event){
+        FlushPOIs();
+        ResetAllTrackers();
+        KingSlimeBossEventManager.Clear();
     }
-    private static void internalGradualStopSlimeRain(@Nullable ServerLevel server, boolean fromBoss){
-        JarGeneralSaveData.setSlimeRainDuration(180);
-        if (server != null) server.getLevelData().setRaining(false);
-        SlimeRainManager.fromBoss = fromBoss;
-        finalizing = true;
-    }
-    private static void finalizeSlimeRain(){
-        finalizeSlimeRain(null, false, true, false);
-    }
-    private static void finalizeSlimeRain(@Nullable ServerLevel server, boolean stopNormalRain, boolean quiet, boolean fromBoss){
-        resetAllTrackers();
-        for (SlimeRainPOI poi : POIs) poi.terminate();
-        POIs = null;
-        playerPOIMap.clear();
-        POIRange = DefaultPOIRange;
-        NeededKills = DefaultNeededKills;
-        finalizing = false;
-        resetAllTrackers();
-
-        JarGeneralSaveData.setSlimeRainDuration(0);
-        if (stopNormalRain && server != null) server.getLevelData().setRaining(false);
-        JarGeneralSaveData.Dirty();
-
-        if (!quiet && server != null){
-            for (ServerPlayer player : server.getPlayers((s) -> true)){
-                player.sendSystemMessage(Component.translatable(
-                        fromBoss ? "jar_of_chaos.slime_rain.end_bosskill" : "jar_of_chaos.slime_rain.end_generic"));
-            }
+    public static void SlimeDeathTracker(EntityLeaveLevelEvent event){
+        if (!JarGeneralSaveData.isSlimeRain() || !(event.getLevel() instanceof ServerLevel)) return;
+        Entity entity = event.getEntity();
+        if (event.getLevel().getEntitiesOfClass(KingSlimeEntity.class, entity.getBoundingBox().inflate(SlimeRainManager.POIRange)).size() > 0) {
+            return;
+        }
+        if (entity instanceof Slime slime && slime.isDeadOrDying()){
+            SlimeRainManager.AwardKillToNearestPOI(slime.position());
         }
     }
+
 
     private static BlockPos findSlimeLayerPosition(Vec3 start, Level level){
         BlockPos.MutableBlockPos mBPos = new BlockPos.MutableBlockPos(start.x, start.y, start.z);
@@ -255,6 +286,7 @@ public class SlimeRainManager {
     }
 
 
+
     public static SlimeRainPOI getClosestPOI(Vec3 pos){
         SlimeRainPOI closest = null;
         double dist = Double.MAX_VALUE;
@@ -292,7 +324,7 @@ public class SlimeRainManager {
         getOrCreatePOINear(pos).addKills(count);
     }
 
-    public static @Nullable ArrayList<SlimeRainPOI> checkAndGatherPOIsWithKillCount(int killCount){
+    public static @Nullable ArrayList<SlimeRainPOI> CheckAndGatherPOIsWithKillCount(int killCount){
         ArrayList<SlimeRainPOI> valid = null;
         for (SlimeRainPOI poi : POIs){
             if (poi.getKills() >= killCount){
@@ -303,7 +335,7 @@ public class SlimeRainManager {
         return valid;
     }
 
-    public static final HashMap<ServerPlayer, SlimeRainPOI> playerPOIMap = new HashMap<>(){
+    private static final HashMap<ServerPlayer, SlimeRainPOI> playerPOIMap = new HashMap<>(){
         @Override
         public SlimeRainPOI put(ServerPlayer key, SlimeRainPOI value) {
             value.addPlayerToBossEvent(key);

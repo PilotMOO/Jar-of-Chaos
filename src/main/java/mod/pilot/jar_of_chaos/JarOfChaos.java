@@ -9,21 +9,24 @@ import mod.pilot.jar_of_chaos.items.JarCreativeTabs;
 import mod.pilot.jar_of_chaos.items.JarItems;
 import mod.pilot.jar_of_chaos.particles.JarParticles;
 import mod.pilot.jar_of_chaos.sound.JarSounds;
+import mod.pilot.jar_of_chaos.systems.ChatteringTeethSoundManager;
+import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
 import mod.pilot.jar_of_chaos.systems.JesterArrowEvents.JesterArrowEventManager;
 import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
+import mod.pilot.jar_of_chaos.systems.PlayerInputReader;
+import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(JarOfChaos.MOD_ID)
 public class JarOfChaos
 {
-    // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "jar_of_chaos";
 
     public static JarGeneralSaveData activeData;
@@ -44,7 +47,11 @@ public class JarOfChaos
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC, "JoC_config.toml");
         Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_config.toml").toString());
 
-        JesterArrowEventManager.RegisterAllEvents();
-        GeloidManager.Register();
+        JarEventHandler.Setup();
+        JesterArrowEventManager.Setup();
+        SlimeRainManager.Setup();
+        GeloidManager.Setup();
+        PlayerInputReader.Setup();
+        ChatteringTeethSoundManager.Setup();
     }
 }

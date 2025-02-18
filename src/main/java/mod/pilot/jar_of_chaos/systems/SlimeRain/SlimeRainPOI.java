@@ -12,7 +12,6 @@ public class SlimeRainPOI {
     public final int range;
     private int cumulativeKills;
 
-
     public SlimeRainPOI(Vec3 position, int range) {
         this.position = position;
         this.range = range;

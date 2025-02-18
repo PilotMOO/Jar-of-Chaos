@@ -1,7 +1,6 @@
 package mod.pilot.jar_of_chaos.systems.SlimeRain;
 
 import mod.pilot.jar_of_chaos.entities.mobs.KingSlimeEntity;
-import net.minecraft.world.BossEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +18,10 @@ public class KingSlimeBossEventManager {
         activeKingSlimes.add(kSlime);
         kingBossEventMap.put(kSlime, kSlime.getBossEventID());
     }
-    public static void flushList(){
+    public static void Clear(){
         activeKingSlimes.clear();
         kingBossEventMap.clear();
+        System.out.println("[KING SLIME BOSS EVENT MANAGER] Cleared out all tracked bosses and events!");
     }
     public static void removeFromList(KingSlimeEntity kSlime){
         activeKingSlimes.remove(kSlime);

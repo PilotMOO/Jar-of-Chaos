@@ -143,10 +143,10 @@ public abstract class JesterArrowEvent {
                 };
                 Entity owner = Arrow.getOwner();
                 JArrow.setOwner(owner);
-                JArrow.setBaseDamage(JArrow.getBaseDamage() / 4);
+                JArrow.setBaseDamage(JArrow.getBaseDamage() / 2);
                 JArrow.setCrit(Arrow.getCrit());
                 JArrow.copyPosition(Arrow);
-                JArrow.setDeltaMovement(Arrow.getDeltaMovement().offsetRandom(random, 1f));
+                JArrow.setDeltaMovement(Arrow.getDeltaMovement().offsetRandom(random, 0.75f));
                 level().addFreshEntity(JArrow);
             }
         }
@@ -188,7 +188,7 @@ public abstract class JesterArrowEvent {
             }
             E.copyPosition(Arrow);
             E.setPos(E.position().add(Arrow.getForward()));
-            E.invulnerableTime = 20;
+            E.invulnerableTime = 40;
             level().addFreshEntity(E);
         }
 

@@ -13,7 +13,7 @@
   "item.jar_of_chaos.slime_arrow": "Bouncy Slime Arrow",
   "item.jar_of_chaos.king_slime_crown": "§aSlime King's Crown",
   "item.jar_of_chaos.king_slime_crown.tooltip": "§7A large crown made of pure gold, decorated with numerous glittering gemstones. This crown used to belong to the (now late) King Slime, lord of all things slimy. A strange magic seems to emanate from within the crown... §6What if you put it on?",
-  "item.jar_of_chaos.king_slime_crown.tooltip_advanced": "§8This crown transforms the wearer into a Royal Geloid. While in this state, they are immune to fall damage and will bounce when colliding with the ground. All slimes are passive towards the wearer. [MORE FEATURES PLANNED]",
+  "item.jar_of_chaos.king_slime_crown.tooltip_advanced": "§8This crown transforms the wearer into a Royal Geloid. While in this state, they are immune to fall damage and will bounce when colliding with the ground. All slimes are passive towards the wearer, and will attempt to fight for them if the user attacks or is attacked",
 
   "item.jar_of_chaos.advanced_tooltip_hint": "§8[Enable Advanced Tooltips for more info]",
 
@@ -53,5 +53,7 @@
 
   "item.jar_of_chaos.jar_event.game_lost": "§7You just lost the game!",
   "jar_of_chaos.kirby_disconnect": "Kirby has fallen...",
-  "item.jar_of_chaos.slime_effigy.tooltip": "§7A strange wooden effigy covered in slime. You feel a small amount of magic permeating throughout the effigy, and you're tempted to raise it towards the sky..."
+  "item.jar_of_chaos.slime_effigy.tooltip": "§7A strange wooden effigy covered in slime. You feel a small amount of magic permeating throughout the effigy, and you're tempted to raise it towards the sky...",
+
+  "jar_of_chaos.loyal_slime_name": "'s slime bodyguard"
 }
