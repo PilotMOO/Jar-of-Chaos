@@ -106,7 +106,7 @@ public class JarForgeEventHandler {
                 if (minecraft.player.getGameProfile() == p.getGameProfile()){
                     int cameraType = kSlime.getOldCameraType();
                     if (cameraType == -1){
-                        System.err.println("Something went wrong! KingSlimeEntity.getOldCameraType() returned -1!");
+                        System.err.println("[KING SLIME CAMERA DISMOUNT FIXER] Something went wrong! KingSlimeEntity.getOldCameraType() returned -1!");
                         return;
                     }
                     CameraType oldCamera = CameraType.values()[kSlime.getOldCameraType()];
@@ -123,28 +123,6 @@ public class JarForgeEventHandler {
             event.setCanceled(true);
         }
     }
-    /*@SubscribeEvent
-    public static void GeloidRecruitListener(PlayerInteractEvent.EntityInteractSpecific event){
-        if (event.getTarget() instanceof Slime slime && GeloidManager.isActiveGeloid(event.getEntity())){
-            if (event.getItemStack().isEmpty()) System.out.println("AKSDJHFKL");
-            RoyalGeloidLoyaltyGoal goal = null;
-            for (Object obj : slime.goalSelector.getAvailableGoals().toArray()){
-                WrappedGoal wGoal = (WrappedGoal)obj;
-                if (wGoal.getGoal() instanceof RoyalGeloidLoyaltyGoal uGoal) {
-                    goal = uGoal;
-                    break;
-                }
-            }
-            if (goal != null){
-                if (goal.geloid != null) {
-                    goal.setGeloid(null);
-                    goal.stop();
-                }
-                else goal.setGeloid(event.getEntity());
-            }
-        }
-    }*/
-
 
     //Player Bounce Handler (special thanks to the devs of TConstruct for having a public GitHub <3)
     private static final ArrayList<BounceInstance> bouncingArrayList = new ArrayList<>();

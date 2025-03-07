@@ -48,15 +48,16 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     @Inject(method = "renderHand", at = @At(value = "RETURN"))
     public void RenderGeloidOnArm(PoseStack stack, MultiBufferSource buffer, int combinedLight, AbstractClientPlayer clientPlayer,
                                   ModelPart arm, ModelPart armSleeve, CallbackInfo ci){
-
-        ModelPart armLayer = null;
-        if (arm == model.leftArm) armLayer = jarOfChaos$geloidRenderer.geloidModel.leftArm;
-        if (arm == model.rightArm) armLayer = jarOfChaos$geloidRenderer.geloidModel.rightArm;
-        if (armLayer != null){
-            armLayer.copyFrom(arm);
-            armLayer.render(stack,
-                    buffer.getBuffer(RenderType.entityTranslucent(AbstractGeloidModel.DEFAULT_TEXTURE_LOCATION)),
-                    combinedLight, OverlayTexture.NO_OVERLAY);
+        if (GeloidManager.isActiveGeloid(clientPlayer)) {
+            ModelPart armLayer = null;
+            if (arm == model.leftArm) armLayer = jarOfChaos$geloidRenderer.geloidModel.leftArm;
+            if (arm == model.rightArm) armLayer = jarOfChaos$geloidRenderer.geloidModel.rightArm;
+            if (armLayer != null) {
+                armLayer.copyFrom(arm);
+                armLayer.render(stack,
+                        buffer.getBuffer(RenderType.entityTranslucent(AbstractGeloidModel.DEFAULT_TEXTURE_LOCATION)),
+                        combinedLight, OverlayTexture.NO_OVERLAY);
+            }
         }
     }
 }

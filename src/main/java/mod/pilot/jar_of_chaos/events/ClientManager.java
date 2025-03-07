@@ -2,6 +2,7 @@ package mod.pilot.jar_of_chaos.events;
 
 import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
+import mod.pilot.jar_of_chaos.entities.client.misc.SpecialItemRenderer;
 import mod.pilot.jar_of_chaos.entities.client.mobs.ChatteringTeethRenderer;
 import mod.pilot.jar_of_chaos.entities.client.mobs.KingSlimeRenderer;
 import mod.pilot.jar_of_chaos.entities.client.projectiles.GrandPianoRenderer;
@@ -30,6 +31,8 @@ public class ClientManager {
         event.registerEntityRenderer(JarEntities.JESTER_ARROW.get(), JesterArrowRenderer::new);
         event.registerEntityRenderer(JarEntities.SLIME_BALL.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(JarEntities.SLIME_ARROW.get(), SlimeArrowRenderer::new);
+
+        event.registerEntityRenderer(JarEntities.SPECIAL_ITEM.get(), SpecialItemRenderer::new);
     }
     @SubscribeEvent
     public static void registerLayerDefinitions(final EntityRenderersEvent.RegisterLayerDefinitions event){

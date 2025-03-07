@@ -10,6 +10,9 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.pilot.jar_of_chaos.data.IntegerCycleTracker;
 import mod.pilot.jar_of_chaos.data.worlddata.JarGeneralSaveData;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
+import mod.pilot.jar_of_chaos.entities.misc.SpecialItemEntity;
+import mod.pilot.jar_of_chaos.items.JarItems;
+import mod.pilot.jar_of_chaos.items.custom.JarItem;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;
@@ -43,6 +46,7 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -98,27 +102,15 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         }
         bossEvent.removeAllPlayers();
         bossEvent.setVisible(false);
+        if (getRemovalReason() == RemovalReason.KILLED){
+            SpecialItemEntity sItem = SpecialItemEntity.CreateAt(level(), position(), new ItemStack(JarItems.KING_SLIME_CROWN.get()),
+                    15446036, 15822180, 1.5f, 60);
+            sItem.move(MoverType.SELF, new Vec3(0, 1, 0));
+            sItem.setDeltaMovement(new Vec3(0, 0.5, 0));
+            sItem.playSound(SoundEvents.ITEM_PICKUP, 2f, 1.5f);
+        }
     }
 
-    /*private enum State{
-                idle,
-                jumping,
-                landing;
-                public int toInt(){
-                    return this.ordinal();
-                }
-                public static @Nullable State fromInt(int i){
-                    return switch (i){
-                        case 0 -> idle;
-                        case 1 -> jumping;
-                        case 2 -> landing;
-                        default -> null;
-                    };
-                }
-            }
-            public static final EntityDataAccessor<Integer> AIState = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
-            public int getState(){return entityData.get(AIState);}
-            public void setState(int state) {entityData.set(AIState, state);}*/
     public static final EntityDataAccessor<Boolean> Fleeing = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean isFleeing(){return entityData.get(Fleeing);}
     public void setFleeing(boolean flag){entityData.set(Fleeing, flag);}
@@ -183,18 +175,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
     public static final EntityDataAccessor<Integer> TeleportTimer = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.INT);
     public int getTeleportTimer() { return entityData.get(TeleportTimer); }
     public void setTeleportTimer(int timer) { entityData.set(TeleportTimer, timer); }
-    /*public boolean TickTeleport(){
-        int timer = getTeleportTimer();
-        if (timer == -1) return false;
-        else if (timer == 0){
-            if (isEmerging()) setTeleportTimer(-1);
-            else setTeleportTimer(53);
-            return true;
-        } else {
-            setTeleportTimer(getTeleportTimer() - 1);
-            return false;
-        }
-    }*/
     public Vec3 teleportPosition;
     public static final EntityDataAccessor<Boolean> IsTeleportAggressive = SynchedEntityData.defineId(KingSlimeEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean isTeleportAggressive() { return entityData.get(IsTeleportAggressive); }
@@ -273,7 +253,6 @@ public class KingSlimeEntity extends PathfinderMob implements GeoEntity {
         entityData.define(Fleeing, false);
         entityData.define(FromSlimeRain, false);
         entityData.define(PriorCameraType, -1);
-        //entityData.define(AIState, 0);
     }
     @Override
     public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {

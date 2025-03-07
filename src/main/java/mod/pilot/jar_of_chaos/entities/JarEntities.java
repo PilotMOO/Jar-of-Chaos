@@ -1,6 +1,7 @@
 package mod.pilot.jar_of_chaos.entities;
 
 import mod.pilot.jar_of_chaos.JarOfChaos;
+import mod.pilot.jar_of_chaos.entities.misc.SpecialItemEntity;
 import mod.pilot.jar_of_chaos.entities.mobs.ChatteringTeethEntity;
 import mod.pilot.jar_of_chaos.entities.mobs.KingSlimeEntity;
 import mod.pilot.jar_of_chaos.entities.projectiles.GrandPianoProjectile;
@@ -38,6 +39,10 @@ public class JarEntities {
     public static final RegistryObject<EntityType<SlimeArrowProjectile>> SLIME_ARROW =
             ENTITY_TYPES.register("slime_arrow", () -> EntityType.Builder.of(SlimeArrowProjectile::new, MobCategory.MISC)
                     .sized(0.2f, 0.2f).build("slime_arrow"));
+
+    public static final RegistryObject<EntityType<SpecialItemEntity>> SPECIAL_ITEM =
+            ENTITY_TYPES.register("special_item", () -> EntityType.Builder.of(SpecialItemEntity::new, MobCategory.MISC)
+                    .sized(0.0f, 0.0f).build("special_item"));
     public static void register(IEventBus eventBus){
         ENTITY_TYPES.register(eventBus);
     }

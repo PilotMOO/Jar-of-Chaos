@@ -70,7 +70,7 @@ public class Config
                     18000, 1, Integer.MAX_VALUE);
             builder.pop();
 
-            builder.push("Entity Configurable");
+            builder.push("Entity Configuration");
             teeth_age = builder.defineInRange("How long Chattering Teeth can exist for before being removed", 2400, 1, Integer.MAX_VALUE);
             pickup_teeth = builder.define("Should you be able to pick up other people's chattering teeth?", false);
             teeth_pvp = builder.define("Should Chattering Teeth owned by players attack other players?", false);

@@ -31,6 +31,8 @@ public class JarItems {
 
     public static final RegistryObject<Item> GELOID_MANAGER = ITEMS.register("geloid_wand",
             () -> new GeloidSetter(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> MAGIC_STICK_WAND = ITEMS.register("magic_stick_wand",
+            () -> new MagicStickWand(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
