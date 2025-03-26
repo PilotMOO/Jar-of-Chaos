@@ -12,14 +12,16 @@ import mod.pilot.jar_of_chaos.sound.JarSounds;
 import mod.pilot.jar_of_chaos.systems.ChatteringTeethSoundManager;
 import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
 import mod.pilot.jar_of_chaos.systems.JesterArrowEvents.JesterArrowEventManager;
+import mod.pilot.jar_of_chaos.systems.ModelDisplay.InWorldDisplayManager;
+import mod.pilot.jar_of_chaos.systems.ModelDisplay.client.GenericModelHub;
 import mod.pilot.jar_of_chaos.systems.PlayerGeloid.GeloidManager;
-import mod.pilot.jar_of_chaos.systems.PlayerInputReader;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
@@ -34,6 +36,7 @@ public class JarOfChaos
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         MinecraftForge.EVENT_BUS.register(this);
+        //MinecraftForge.EVENT_BUS.addListener(JarOfChaos::FinalizeLoading);
         JarItems.register(modEventBus);
         JarBlocks.register(modEventBus);
         JarCreativeTabs.register(modEventBus);
@@ -46,11 +49,17 @@ public class JarOfChaos
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC, "JoC_config.toml");
         Config.loadConfig(Config.SERVER_SPEC, FMLPaths.CONFIGDIR.get().resolve("JoC_config.toml").toString());
 
+        GenericModelHub.Setup();
+        InWorldDisplayManager.Setup();
         JarEventHandler.Setup();
         JesterArrowEventManager.Setup();
         SlimeRainManager.Setup();
         GeloidManager.Setup();
-        PlayerInputReader.Setup();
         ChatteringTeethSoundManager.Setup();
+    }
+
+    public static void FinalizeLoading(FMLCommonSetupEvent event){
+        System.out.println("Enqueuing work for finalizing init...");
+        event.enqueueWork(GenericModelHub::FinalizeInit);
     }
 }

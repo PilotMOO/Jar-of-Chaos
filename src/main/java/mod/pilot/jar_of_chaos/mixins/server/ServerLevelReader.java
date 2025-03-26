@@ -51,9 +51,8 @@ public abstract class ServerLevelReader extends Level implements WorldGenLevel {
     private void postTickWeatherReader(BooleanSupplier pHasTimeLeft, CallbackInfo c_if){
         if (!jarOfChaos$rainStatePrior && serverLevelData.isRaining()){
             if (random.nextDouble() <= jarOfChaos$slimeRainChance){
-                //System.out.println("[TICK WEATHER READER] reader declared SLIME RAIN TIME BITCH!");
                 SlimeRainManager.StartSlimeRain(this.getLevel(), random.nextInt(jarOfChaos$minSlimeRainDuration, jarOfChaos$maxSlimeRainDuration), false);
-            } /*else System.out.println("[TICK WEATHER READER] no slime rain :[");*/
+            }
         }
     }
 
