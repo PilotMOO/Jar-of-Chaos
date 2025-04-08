@@ -193,7 +193,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         if (getState() != 0){
             ManageVelocity();
             HitChecker();
-        }
+        } else setState(state.falling);
         if (getState() == 2){
             Age();
             if (getAge() > MaxAge){
@@ -304,7 +304,7 @@ public class GrandPianoProjectile extends Projectile implements GeoEntity {
         setState(2);
         setDeltaMovement(Vec3.ZERO);
         setPos(position().add(0, 1, 0));
-        playSound(JarSounds.PIANO_CRASH.get(), 5f, 1f);
+        playSound(JarSounds.PIANO_CRASH.get(), 2.5f, 1f);
         SpawnCrashParticles();
 
         Level level = level();

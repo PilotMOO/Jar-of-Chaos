@@ -8,7 +8,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
-import mod.pilot.jar_of_chaos.items.custom.client.JarRenderer;
+import mod.pilot.jar_of_chaos.items.custom.client.JarOfChaosRenderer;
 import mod.pilot.jar_of_chaos.systems.JarEvents.JarEvent;
 import mod.pilot.jar_of_chaos.systems.JarEvents.JarEventHandler;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -28,8 +28,8 @@ import java.util.function.Supplier;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class JarItem extends Item implements GeoItem {
-    public JarItem(Properties pProperties) {
+public class JarOfChaosItem extends Item implements GeoItem {
+    public JarOfChaosItem(Properties pProperties) {
         super(pProperties);
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
@@ -63,12 +63,12 @@ public class JarItem extends Item implements GeoItem {
     @Override
     public void createRenderer(Consumer<Object> consumer) {
         consumer.accept(new RenderProvider() {
-            private JarRenderer renderer = null;
+            private JarOfChaosRenderer renderer = null;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null) {
-                    renderer = new JarRenderer();
+                    renderer = new JarOfChaosRenderer();
                 }
                 return this.renderer;
             }

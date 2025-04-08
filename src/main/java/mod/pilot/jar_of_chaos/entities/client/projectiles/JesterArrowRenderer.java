@@ -31,7 +31,6 @@ public class JesterArrowRenderer extends GeoEntityRenderer<JesterArrowProjectile
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, arrow.yRotO, arrow.getYRot())));
         poseStack.mulPose(Axis.XN.rotationDegrees(Mth.lerp(partialTick, arrow.xRotO, arrow.getXRot())));
-
         super.render(arrow, yaw, partialTick, poseStack, pBuffer, pPackedLight);
         poseStack.popPose();
     }

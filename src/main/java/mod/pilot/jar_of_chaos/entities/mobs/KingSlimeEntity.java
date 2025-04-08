@@ -12,7 +12,6 @@ import mod.pilot.jar_of_chaos.data.worlddata.JarGeneralSaveData;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.entities.misc.SpecialItemEntity;
 import mod.pilot.jar_of_chaos.items.JarItems;
-import mod.pilot.jar_of_chaos.items.custom.JarItem;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;

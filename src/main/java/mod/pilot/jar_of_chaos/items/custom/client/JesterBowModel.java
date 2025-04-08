@@ -1,7 +1,6 @@
 package mod.pilot.jar_of_chaos.items.custom.client;
 
 import mod.azure.azurelib.model.GeoModel;
-import mod.pilot.jar_of_chaos.items.custom.JarItem;
 import mod.pilot.jar_of_chaos.items.custom.JesterBowItem;
 import net.minecraft.resources.ResourceLocation;
 

@@ -12,7 +12,7 @@ public class JarItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, JarOfChaos.MOD_ID);
 
     public static final RegistryObject<Item> JAR = ITEMS.register("jar_of_chaos",
-            () -> new JarItem(new Item.Properties().stacksTo(1)));
+            () -> new JarOfChaosItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> JESTER_BOW = ITEMS.register("jester_bow",
             () -> new JesterBowItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> CHATTER_CANNON = ITEMS.register("chatter_cannon",
