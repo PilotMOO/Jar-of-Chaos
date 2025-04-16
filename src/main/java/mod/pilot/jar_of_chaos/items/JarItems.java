@@ -21,6 +21,9 @@ public class JarItems {
     public static final RegistryObject<Item> CHATTERING_TEETH_SPAWN = ITEMS.register("chattering_teeth_spawn",
             () -> new ChatteringTeethSpawn(new Item.Properties()));
 
+    public static final RegistryObject<Item> TOASTER = ITEMS.register("toaster",
+            () -> new ToasterItem(new Item.Properties().stacksTo(1)));
+
     public static final RegistryObject<Item> SLIME_EFFIGY = ITEMS.register("slime_effigy",
             () -> new SlimeEffigyItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> SLIME_ARROW = ITEMS.register("slime_arrow",

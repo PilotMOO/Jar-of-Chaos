@@ -23,5 +23,11 @@
     "sounds": [
       "jar_of_chaos:boing"
     ]
+  },
+  "zap": {
+    "subtitles": "sounds.jar_of_chaos.zap",
+    "sounds": [
+      "jar_of_chaos:zap"
+    ]
   }
 }

@@ -26,6 +26,8 @@ public class JarCreativeTabs {
 
                         register.accept(JarItems.CHATTERING_TEETH_SPAWN.get());
 
+                        register.accept(JarItems.TOASTER.get());
+
                         register.accept(JarBlocks.SLIME_LAYER.get());
 
                         register.accept(JarItems.SLIME_EFFIGY.get());

@@ -33,6 +33,8 @@ public class JarDamageTypes {
     public static final ResourceKey<DamageType> TEETH2 = create("teeth2");
     public static final ResourceKey<DamageType> TEETH3 = create("teeth3");
 
+    public static final ResourceKey<DamageType> TOASTER = create("toaster");
+
     public static DamageSource piano(LivingEntity entity){
         switch (entity.getRandom().nextIntBetweenInclusive(1, 3)){
             default -> {
@@ -63,5 +65,9 @@ public class JarDamageTypes {
                 return damageSource(entity, TEETH3, entity);
             }
         }
+    }
+
+    public static DamageSource toaster(LivingEntity entity){
+        return damageSource(entity, TOASTER, entity);
     }
 }

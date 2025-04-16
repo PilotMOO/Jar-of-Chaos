@@ -9,6 +9,8 @@
 
   "item.jar_of_chaos.chattering_teeth_spawn": "Chattering Teeth",
   "item.jar_of_chaos.chattering_teeth_spawn.tooltip": "Use code \"lambert\" at checkout for 20% off!",
+  "item.jar_of_chaos.toaster": "Toaster",
+  "item.jar_of_chaos.toaster.tooltip": "§7Toasters love to play in §9water!",
   "item.jar_of_chaos.slime_effigy": "§aEffigy of Slime",
   "item.jar_of_chaos.slime_arrow": "Bouncy Slime Arrow",
   "item.jar_of_chaos.king_slime_crown": "§aSlime King's Crown",
@@ -32,6 +34,7 @@
   "sounds.jar_of_chaos.piano_crash": "Piano crashing",
   "sounds.jar_of_chaos.kirby": "Kirby",
   "sounds.jar_of_chaos.boing": "Boing!",
+  "sounds.jar_of_chaos.zap": "Zap!",
 
   "death.attack.piano1": "%1$s forgot to look up",
   "death.attack.piano2": "%1$s got Loony-Toon'd",
@@ -40,6 +43,7 @@
   "death.attack.teeth1": "%1$s had their face chewed off by %2$s",
   "death.attack.teeth2": "%1$s's bones were gnawed on by %2$s",
   "death.attack.teeth3": "%1$s became %2$s fodder",
+  "death.attack.toaster": "%1$s decided to take a bath with a toaster",
 
   "enchantment.jar_of_chaos.pianoism": "Pianoism",
   "enchantment.jar_of_chaos.pianoism.desc": "Has a small chance to spawn a grand piano above struck foes' heads, crushing them in a very cartoonish way",
