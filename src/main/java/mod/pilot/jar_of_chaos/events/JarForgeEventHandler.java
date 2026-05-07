@@ -15,6 +15,8 @@ import mod.pilot.jar_of_chaos.systems.SlimeRain.KingSlimeBossEventManager;
 import mod.pilot.jar_of_chaos.systems.SlimeRain.SlimeRainManager;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.Options;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -45,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = JarOfChaos.MOD_ID)
 public class JarForgeEventHandler {
@@ -116,6 +119,17 @@ public class JarForgeEventHandler {
             }
         }
     }
+    private static final Random random = new Random();
+    private static final double autoJumpChance = 0.01d;
+    @SubscribeEvent
+    public static void autoJump(TickEvent.ClientTickEvent event){
+        if (random.nextDouble() <= autoJumpChance){
+            Options options = Minecraft.getInstance().options;
+            OptionInstance<Boolean> aJump = options.autoJump();
+            aJump.set(!aJump.get());
+            System.out.println("Inverting autojump");
+        }
+    }
 
     @SubscribeEvent
     public static void GeloidSlimeTargetHook(LivingChangeTargetEvent event){
@@ -149,14 +163,14 @@ public class JarForgeEventHandler {
         return null;
     }
     @SubscribeEvent
-    public static void ReadAndWritePlayerBounce(LivingFallEvent event){
+    public static void readAndWritePlayerBounce(LivingFallEvent event){
         if (event.getDistance() > 1.5 && event.getEntity() instanceof Player player && isBouncy(player)){
             AddToBounceMap(player);
             event.setDamageMultiplier(0);
         }
     }
     @SubscribeEvent
-    public static void ApplyPlayerBounce(LivingEvent.LivingTickEvent event){
+    public static void applyPlayerBounce(LivingEvent.LivingTickEvent event){
         BounceInstance bounce;
         if (event.getEntity() instanceof Player player && isBouncy(player)
             && (bounce = retrieveBounceInstanceFor(player)) != null){
@@ -170,7 +184,7 @@ public class JarForgeEventHandler {
     private static boolean isBouncy(Player player){
         return player.hasEffect(JarEffects.SPLAT.get()) || GeloidManager.isActiveGeloid(player);
     }
-    private record BounceInstance(Player player, Vec3 oldDelta) {
+    public record BounceInstance(Player player, Vec3 oldDelta) {
         public BounceInstance(@NotNull Player player, @NotNull Vec3 oldDelta){
             this.player = player;
             this.oldDelta = oldDelta;

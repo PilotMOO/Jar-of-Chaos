@@ -32,7 +32,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
                               MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci){
         GeloidManager.GeloidPacket packet = GeloidManager.getPacketFor(pEntity);
         if (packet != null){
-            float vLerp = packet.LerpSquish(true);
+            float vLerp = packet.lerpSquish(true);
             float hLerp = 1 + ((1 - vLerp));
             pPoseStack.scale(hLerp, vLerp, hLerp);
         }

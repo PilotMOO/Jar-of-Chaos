@@ -1,5 +1,6 @@
 package mod.pilot.jar_of_chaos.events;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mod.pilot.jar_of_chaos.JarOfChaos;
 import mod.pilot.jar_of_chaos.entities.JarEntities;
 import mod.pilot.jar_of_chaos.entities.client.misc.SpecialItemRenderer;
@@ -13,7 +14,12 @@ import mod.pilot.jar_of_chaos.particles.StarParticle;
 import mod.pilot.jar_of_chaos.systems.PlayerGeloid.client.SlimGeloidModel;
 import mod.pilot.jar_of_chaos.systems.PlayerGeloid.client.GeloidModel;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;

@@ -2,13 +2,10 @@ package mod.pilot.jar_of_chaos.systems.PlayerGeloid;
 
 import mod.pilot.jar_of_chaos.data.JarMathHelper;
 import mod.pilot.jar_of_chaos.items.JarItems;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -99,7 +96,7 @@ public class GeloidManager {
             Player player = (Player)event.getEntity();
             GeloidPacket packet = getOrCreatePacketFor(player);
             double distanceSqr = event.getDistance() * event.getDistance();
-            packet.ImpactSquish((float)(1 - (distanceSqr / (distanceSqr + 100))));
+            packet.impactSquish((float)(1 - (distanceSqr / (distanceSqr + 100))));
         }
     }
     public static void GeloidTick(LivingEvent.LivingTickEvent event){
@@ -197,13 +194,13 @@ public class GeloidManager {
             this(1f, 1f);
         }
 
-        public void ImpactSquish(float squishAmount){
-            ImpactSquish(squishAmount, Math.abs((1 - squishAmount)) + 1);
+        public void impactSquish(float squishAmount){
+            impactSquish(squishAmount, Math.abs((1 - squishAmount)) + 1);
         }
-        public void ImpactSquish(float squishAmount, float squishDuration){
-            ImpactSquish(squishAmount, squishDuration, false);
+        public void impactSquish(float squishAmount, float squishDuration){
+            impactSquish(squishAmount, squishDuration, false);
         }
-        public void ImpactSquish(float squishAmount, float squishDuration, boolean forceSet){
+        public void impactSquish(float squishAmount, float squishDuration, boolean forceSet){
             if (forceSet){
                 this.squishAmount = squishAmount;
             } else {
@@ -220,21 +217,21 @@ public class GeloidManager {
         private static final float LowerStretchCap = 0.5f;
         public void Stretch(float increaseAmount){
             squishAmount += increaseAmount;
-            squishDuration += Math.abs(increaseAmount * 2.5);
+            squishDuration += (float) Math.abs(increaseAmount * 2.5);
             age -= 1 / (squishDuration * 20);
         }
-        public float LerpSquish(boolean set){
-            return LerpSquish(activeSquishAmount, set);
+        public float lerpSquish(boolean set){
+            return lerpSquish(activeSquishAmount, set);
         }
-        public float LerpSquish(float old, boolean set){
+        public float lerpSquish(float old, boolean set){
             if (age >= 0.5 && set){
                 squishAmount = expectedOversquish;
                 expectedOversquish = 1;
                 age = 0;
                 if (squishAmount != 1){
                     squishDuration = Math.abs((1 - squishAmount) * 2.5f) + 1;
-                } else{
-                    squishDuration = Math.abs((1 - activeSquishAmount) * 2.5f) + 1;
+                } else {
+                    squishDuration = Math.abs((1 - old) * 2.5f) + 1;
                 }
             }
             float value = old + ((squishAmount - old) * age);
@@ -254,7 +251,7 @@ public class GeloidManager {
                     + ", activeSquishAmount : " + activeSquishAmount
                     + ", squishDuration : " + squishDuration
                     + ", age : " + age
-                    + ", Lerped : " + LerpSquish(false) + "]";
+                    + ", Lerped : " + lerpSquish(false) + "]";
         }
     }
 }
